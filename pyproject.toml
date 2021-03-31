@@ -16,6 +16,7 @@ jedi = "^0.18.0"
 isort = "^5.7.0"
 yapf = "^0.31.0"
 pylint = "^2.7.2"
+ipython = "^7.21.0"
 
 [tool.poetry.scripts]
 drive = "kickstart.main:run"
