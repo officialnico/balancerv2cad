@@ -8,6 +8,8 @@ authors = ["Matt Williams <mattinzhuhai@outlook.com>"]
 python = "^3.8"
 colorlog = "^4.7.2"
 colorama = "^0.4.4"
+python-dotenv = "^0.17.0"
+yapf = "^0.31.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

@@ -13,7 +13,8 @@ correctly
 # pylint: disable=W0621, E1101, C0103, W0612
 
 # standard lib
-import subprocess as sp
+import sys
+
 # third party
 import pytest
 
@@ -29,8 +30,9 @@ def version_test() -> None:
     test version
     """
     # Setup code
+    sys.stdout.write('Setup code')
 
     yield kickstart
 
     # tear down code
-    print("Tearing down")
+    sys.stdout.write('Teardown code')
