@@ -30,9 +30,9 @@ def version_test() -> None:
     test version
     """
     # Setup code
-    sys.stdout.write('Setup code')
+    sys.stdout.write('\nRunning setup code for kickstart module\n')
 
     yield kickstart
 
     # tear down code
-    sys.stdout.write('Teardown code')
+    sys.stdout.write('Running Teardown code for kickstart module\n')
