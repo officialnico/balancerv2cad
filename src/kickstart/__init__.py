@@ -5,7 +5,12 @@ from pathlib import PosixPath
 
 __version__ = '0.1.0'
 
+# This dumps the log file to the root directory of the project
 BASE_DIR = PosixPath(__file__).resolve(strict=True).parent.parent.parent
+
+# uncomment this line to dump the log file to ~/.config/__package__
+#BASE_DIR = PosixPath().home() / '.config' / __package__
+
 DEFAULT_LOGGER_NAME = 'dev'
 LOGGING_FILE_NAME = f'{__package__}-{__version__}.log'
 
