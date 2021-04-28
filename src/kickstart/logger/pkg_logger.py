@@ -79,8 +79,10 @@ class PackageLogger:
         if not valid:
             # name passed is not a valid listed logger,
             # return dev as default logger
-            print(f'\n{Back.BLACK}{Fore.RED}{name}: IS NOT A VALID LOGGER\n'
-                  f'{Back.BLACK}{Fore.YELLOW}FALLING BACK TO DEV\n')
+            print(
+                f'\n{Back.BLACK}{Fore.RED}{name}: IS NOT A VALID LOGGER\n'
+                f'{Back.BLACK}{Fore.YELLOW}FALLING BACK TO {DEFAULT_LOGGER_NAME}\n'
+            )
             logger = logging.getLogger(DEFAULT_LOGGER_NAME)
             return logger
 

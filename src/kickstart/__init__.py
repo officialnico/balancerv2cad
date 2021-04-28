@@ -4,11 +4,10 @@ Package wide configurations
 from pathlib import PosixPath
 
 __version__ = '0.1.0'
-from kickstart import __package__ as PKG_NAME
 
 BASE_DIR = PosixPath(__file__).resolve(strict=True).parent.parent.parent
 DEFAULT_LOGGER_NAME = 'dev'
-LOGGING_FILE_NAME = f'{PKG_NAME}-{__version__}.log'
+LOGGING_FILE_NAME = f'{__package__}-{__version__}.log'
 
 LOGGING_CONFIG = {
     "version": 1,
