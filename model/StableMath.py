@@ -9,23 +9,20 @@ class BalancerMathResult:
     fee: Decimal
 
 class StableMath:
-# This function calculates the balance of a given token (tokenIndex)
-# given all the other balances and the invariant
-
 
 # -------------------------------------
 
 
-    def calcBptInGivenExactTokensOut(amplificationParameter: int, balances: list, amountsOut: list, bptTotalSupply: int, swapFee: int) -> int:
+    def calcBptInGivenExactTokensOut(amplificationParameter: Decimal, balances: list[Decimal], amountsOut: list[Decimal], bptTotalSupply: Decimal, swapFee: Decimal) -> int:
         return 0
     
-    def calcBptOutGivenExactTokensIn(amplificationParameter: int, balances: list, amountsIn: list, bptTotalSupply: int, swapFee: int):
+    def calcBptOutGivenExactTokensIn(amplificationParameter: Decimal, balances: list[Decimal], amountsIn: list[Decimal], bptTotalSupply: Decimal, swapFee: Decimal):
         ...
     
-    def calcDueTokenProtocolSwapFeeAmount(amplificationParameter: int, balances: list, lastIvariant: int, bptTotalSupply: int, swapFee: int):
+    def calcDueTokenProtocolSwapFeeAmount(amplificationParameter: Decimal, balances: list[Decimal], lastIvariant: Decimal, bptTotalSupply: Decimal, swapFee: Decimal):
         ...
 
-    def calcInGivenOut(amplificationParameter: int, balances: list, tokenIndexIn: int, tokenIndexOut: int, tokenAmountOut: int):
+    def calcInGivenOut(amplificationParameter: Decimal, balances: list[Decimal], tokenIndexIn: int, tokenIndexOut: int, tokenAmountOut: Decimal):
         ...
 
     def calcOutGivenIn():
@@ -71,19 +68,3 @@ class StableMath:
                 break
         return invariant
 
-    # ----------------------Test------------------------
-    def tester(title, result, expected):
-        res = result == expected
-        if(not res): print(title, res, '| Result:', result, 'Expected:', expected, 'diff->', abs(result - expected))
-        else:  print(title, res)
-
-#     def test():
-#         self.tester('calculateInvariant', self.calculateInvariant(20,[23,23]), 46)
-#         self.tester('calcBptInGivenExactTokensOut', self.calcBptInGivenExactTokensOut(2,[222,3112,311],[11,22,310],2,4), 2)
-#         # assert self.calcBptOutGivenExactTokensIn(22,[2,3,4,20],[2,1,2,1000],3,4), 56
-#         # assert self.calcInGivenOut(2,[222,3112,311],1,1,4), 0.000002756210410895  
-#         self.tester('getTokenBalanceGivenInvariantAndAllOtherBalances', self.getTokenBalanceGivenInvariantAndAllOtherBalances(22, [2,3,4,20], 1, 2), 0.002573235526125192)
-
-# if __name__=='__main__':
-#     stab = StableMath()
-#     stab.test()
