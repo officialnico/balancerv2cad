@@ -1,7 +1,7 @@
-from decimal import Decimal
+from decimal import *
 from attr import dataclass
 from math import ceil, floor
-
+from model.util import *
 
 @dataclass
 class BalancerMathResult:
@@ -40,11 +40,39 @@ class StableMath:
 
     # ------------------------------------
 
-    def getTokenBalanceGivenInvariantAndAllOtherBalances(amplificationParameter: int, balances: list, invariant: int, tokenIndex: int) -> int:
-        amplificationParameter = Decimal(amplificationParameter)
+    def getTokenBalanceGivenInvariantAndAllOtherBalances(amplificationParameter: Decimal, balances: list[Decimal], invariant: Decimal, tokenIndex: int) -> Decimal:
+        getcontext().prec = 18
         
+        ampTimesTotal = amplificationParameter * len(balances)
+        bal_sum = Decimal(sum(balances))
 
-    def calculateInvariant(amplificationParameter: int, balances: list) -> int:
+        P_D = len(balances) * balances[0]
+        for i in range(1, len(balances)):
+            P_D = (P_D*balances[i]*len(balances))/invariant
+
+        bal_sum -= balances[tokenIndex]
+
+        c = invariant*invariant/ampTimesTotal
+        c = divUp(mulUp(c, balances[tokenIndex]), P_D)
+
+        print(type(bal_sum),type(invariant),type(ampTimesTotal))
+        b = bal_sum + divDown(invariant, ampTimesTotal)
+
+        prevTokenbalance = 0
+        tokenBalance = divUp((invariant*invariant+c), (invariant+b))
+
+        for i in range(255):
+            prevTokenbalance = tokenBalance
+            tokenBalance = divUp((mulUp(tokenBalance,tokenBalance) + c),((tokenBalance*2)+b-invariant))
+            if(tokenBalance > prevTokenbalance):
+                if(tokenBalance-prevTokenbalance <= 1):
+                    break
+            elif(prevTokenbalance-tokenBalance <= 1):
+                break
+
+        return tokenBalance
+
+    def calculateInvariant(amplificationParameter: Decimal, balances: list[Decimal]) -> int:
         bal_sum = 0
         for bal in balances:
             bal_sum += bal
