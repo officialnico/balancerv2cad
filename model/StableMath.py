@@ -1,7 +1,7 @@
 from decimal import *
 from attr import dataclass
 from math import ceil, floor
-from model.util import *
+from util import *
 
 @dataclass
 class BalancerMathResult:
@@ -12,27 +12,119 @@ class StableMath:
 
 # -------------------------------------
 
-
+    # Flow of calculations:
+    #  amountsTokenOut -> amountsOutProportional ->
+    #  amountOutPercentageExcess -> amountOutBeforeFee -> newInvariant -> amountBPTIn
+    
     def calcBptInGivenExactTokensOut(amplificationParameter: Decimal, balances: list[Decimal], amountsOut: list[Decimal], bptTotalSupply: Decimal, swapFee: Decimal) -> int:
         return 0
+    
+    # Flow of calculations:
+    #  amountsTokenIn -> amountsInProportional ->
+    #  amountsInPercentageExcess -> amountsInAfterFee -> newInvariant -> amountBPTOut
+    #  TODO: remove equations below and save them to Notion documentation
+    #  amountInPercentageExcess = 1 - amountInProportional/amountIn (if amountIn>amountInProportional)
+    #  amountInAfterFee = amountIn * (1 - swapFeePercentage * amountInPercentageExcess)
+    #  amountInAfterFee = amountIn - fee amount
+    #  fee amount = (amountIn - amountInProportional) * swapFeePercentage
+    #  amountInAfterFee = amountIn - (amountIn - amountInProportional) * swapFeePercentage
+    #  amountInAfterFee = amountIn * (1 - (1 - amountInProportional/amountIn) * swapFeePercentage)
+    #  amountInAfterFee = amountIn * (1 - amountInPercentageExcess * swapFeePercentage)
     
     def calcBptOutGivenExactTokensIn(amplificationParameter: Decimal, balances: list[Decimal], amountsIn: list[Decimal], bptTotalSupply: Decimal, swapFee: Decimal):
         ...
     
-    def calcDueTokenProtocolSwapFeeAmount(amplificationParameter: Decimal, balances: list[Decimal], lastIvariant: Decimal, bptTotalSupply: Decimal, swapFee: Decimal):
-        ...
+    def calcDueTokenProtocolSwapFeeAmount(amplificationParameter: Decimal, balances: list[Decimal], lastIvariant: Decimal, tokenIndex: int, protocolSwapFeePercentage: Decimal):
+        # /**************************************************************************************************************
+        # // oneTokenSwapFee - polynomial equation to solve                                                            //
+        # // af = fee amount to calculate in one token                                                                 //
+        # // bf = balance of fee token                                                                                 //
+        # // f = bf - af (finalBalanceFeeToken)                                                                        //
+        # // D = old invariant                                            D                     D^(n+1)                //
+        # // A = amplification coefficient               f^2 + ( S - ----------  - D) * f -  ------------- = 0         //
+        # // n = number of tokens                                    (A * n^n)               A * n^2n * P              //
+        # // S = sum of final balances but f                                                                           //
+        # // P = product of final balances but f                                                                       //
+        # *******
+        finalBalanceFeeToken = getTokenBalanceGivenInvariantAndAllOtherBalances(
+            amplificationParameter,
+            balances,
+            lastInvariant,
+            tokenIndex)
+        
+        if(balances[tokenIndex] > finalBalanceFeeToken):
+            accumulatedTokenSwapFees = balances[tokenIndex] - finalBalanceFeeToken
+        else:
+            accumulatedTokenSwapFees = 0
+            
+        return accumulatedTokenSwapFees
 
     def calcInGivenOut(amplificationParameter: Decimal, balances: list[Decimal], tokenIndexIn: int, tokenIndexOut: int, tokenAmountOut: Decimal):
+        
+        # /**************************************************************************************************************
+        # // inGivenOut token x for y - polynomial equation to solve                                                   //
+        # // ax = amount in to calculate                                                                               //
+        # // bx = balance token in                                                                                     //
+        # // x = bx + ax (finalBalanceIn)                                                                              //
+        # // D = invariant                                                D                     D^(n+1)                //
+        # // A = amplification coefficient               x^2 + ( S - ----------  - D) * x -  ------------- = 0         //
+        # // n = number of tokens                                     (A * n^n)               A * n^2n * P             //
+        # // S = sum of final balances but x                                                                           //
+        # // P = product of final balances but x                                                                       //
+        # **************************************************************************************************************/
+
+        invariant = calculateInvariant(amplificationParameter, balances)
+        balances[tokenIndexOut] = balances[tokenIndexOut] - tokenAmountOut
+        
+        finalBalanceIn = getTokenBalanceGivenInvariantAndAllOtherBalances(
+            amplificationParameter,
+            balances,
+            invariant,
+            tokenIndexIn
+        )
+        
+        balances[tokenIndexOut] = balances[tokenIndexOut]+ tokenAmountOut
+        return finalBalanceIn - balances[tokenIndexIn] + 1/1e18
+ 
+        
+    def calcOutGivenIn(amplificationParameter: Decimal, balances: list[Decimal], tokenIndexIn: int, tokenIndexOut: int, tokenAmountIn: Decimal):
+        
+        # /**************************************************************************************************************
+        # // outGivenIn token x for y - polynomial equation to solve                                                   //
+        # // ay = amount out to calculate                                                                              //
+        # // by = balance token out                                                                                    //
+        # // y = by - ay (finalBalanceOut)                                                                             //
+        # // D = invariant                                               D                     D^(n+1)                 //
+        # // A = amplification coefficient               y^2 + ( S - ----------  - D) * y -  ------------- = 0         //
+        # // n = number of tokens                                    (A * n^n)               A * n^2n * P              //
+        # // S = sum of final balances but y                                                                           //
+        # // P = product of final balances but y                                                                       //
+        # **************************************************************************************************************/
+
         ...
 
-    def calcOutGivenIn():
-        ...
-
+    # Flow of calculations:
+    #  amountBPTOut -> newInvariant -> (amountInProportional, amountInAfterFee) ->
+    #  amountInPercentageExcess -> amountIn
+        
     def calcTokenInGivenExactBptOut():
         ...
 
     def calcTokensOutGivenExactBptIn():
+        
+        # /**********************************************************************************************
+        # // exactBPTInForTokensOut                                                                    //
+        # // (per token)                                                                               //
+        # // aO = tokenAmountOut             /        bptIn         \                                  //
+        # // b = tokenBalance      a0 = b * | ---------------------  |                                 //
+        # // bptIn = bptAmountIn             \     bptTotalSupply    /                                 //
+        # // bpt = bptTotalSupply                                                                      //
+        # **********************************************************************************************/
         ...
+        
+    # Flow of calculations:
+    #  amountBPTin -> newInvariant -> (amountOutProportional, amountOutBeforeFee) ->
+    #  amountOutPercentageExcess -> amountOut
 
     def calcTokenOutGivenExactBptIn():
         ...
@@ -73,6 +165,16 @@ class StableMath:
         return tokenBalance
 
     def calculateInvariant(amplificationParameter: Decimal, balances: list[Decimal]) -> int:
+        
+        # /**********************************************************************************************
+        # // invariant                                                                                 //
+        # // D = invariant                                                  D^(n+1)                    //
+        # // A = amplification coefficient      A  n^n S + D = A D n^n + -----------                   //
+        # // S = sum of balances                                             n^n P                     //
+        # // P = product of balances                                                                   //
+        # // n = number of tokens                                                                      //
+        # *********x************************************************************************************/
+        
         bal_sum = 0
         for bal in balances:
             bal_sum += bal
