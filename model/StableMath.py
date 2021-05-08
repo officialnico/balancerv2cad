@@ -1,7 +1,7 @@
 from decimal import *
 from attr import dataclass
 from math import ceil, floor
-from model.util import *
+from util import *
 
 @dataclass
 class BalancerMathResult:
@@ -34,7 +34,7 @@ class StableMath:
     def calcBptOutGivenExactTokensIn(amplificationParameter: Decimal, balances: list[Decimal], amountsIn: list[Decimal], bptTotalSupply: Decimal, swapFee: Decimal):
         ...
     
-    def calcDueTokenProtocolSwapFeeAmount(amplificationParameter: Decimal, balances: list[Decimal], lastIvariant: Decimal, bptTotalSupply: Decimal, swapFee: Decimal):
+    def calcDueTokenProtocolSwapFeeAmount(amplificationParameter: Decimal, balances: list[Decimal], lastIvariant: Decimal, tokenIndex: int, protocolSwapFeePercentage: Decimal):
         # /**************************************************************************************************************
         # // oneTokenSwapFee - polynomial equation to solve                                                            //
         # // af = fee amount to calculate in one token                                                                 //
@@ -46,7 +46,18 @@ class StableMath:
         # // S = sum of final balances but f                                                                           //
         # // P = product of final balances but f                                                                       //
         # *******
-        ...
+        finalBalanceFeeToken = getTokenBalanceGivenInvariantAndAllOtherBalances(
+            amplificationParameter,
+            balances,
+            lastInvariant,
+            tokenIndex)
+        
+        if(balances[tokenIndex] > finalBalanceFeeToken):
+            accumulatedTokenSwapFees = balances[tokenIndex] - finalBalanceFeeToken
+        else:
+            accumulatedTokenSwapFees = 0
+            
+        return accumulatedTokenSwapFees
 
     def calcInGivenOut(amplificationParameter: Decimal, balances: list[Decimal], tokenIndexIn: int, tokenIndexOut: int, tokenAmountOut: Decimal):
         
@@ -62,8 +73,19 @@ class StableMath:
         # // P = product of final balances but x                                                                       //
         # **************************************************************************************************************/
 
-
-
+        invariant = calculateInvariant(amplificationParameter, balances)
+        balances[tokenIndexOut] = balances[tokenIndexOut] - tokenAmountOut
+        
+        finalBalanceIn = getTokenBalanceGivenInvariantAndAllOtherBalances(
+            amplificationParameter,
+            balances,
+            invariant,
+            tokenIndexIn
+        )
+        
+        balances[tokenIndexOut] = balances[tokenIndexOut]+ tokenAmountOut
+        return finalBalanceIn - balances[tokenIndexIn] + 1/1e18
+ 
         
     def calcOutGivenIn(amplificationParameter: Decimal, balances: list[Decimal], tokenIndexIn: int, tokenIndexOut: int, tokenAmountIn: Decimal):
         
