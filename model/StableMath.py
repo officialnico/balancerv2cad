@@ -15,10 +15,10 @@ class StableMath:
     # Flow of calculations:
     #  amountsTokenOut -> amountsOutProportional ->
     #  amountOutPercentageExcess -> amountOutBeforeFee -> newInvariant -> amountBPTIn
-    
+
     def calcBptInGivenExactTokensOut(amplificationParameter: Decimal, balances: list[Decimal], amountsOut: list[Decimal], bptTotalSupply: Decimal, swapFee: Decimal) -> int:
         return 0
-    
+
     # Flow of calculations:
     #  amountsTokenIn -> amountsInProportional ->
     #  amountsInPercentageExcess -> amountsInAfterFee -> newInvariant -> amountBPTOut
@@ -30,10 +30,10 @@ class StableMath:
     #  amountInAfterFee = amountIn - (amountIn - amountInProportional) * swapFeePercentage
     #  amountInAfterFee = amountIn * (1 - (1 - amountInProportional/amountIn) * swapFeePercentage)
     #  amountInAfterFee = amountIn * (1 - amountInPercentageExcess * swapFeePercentage)
-    
+
     def calcBptOutGivenExactTokensIn(amplificationParameter: Decimal, balances: list[Decimal], amountsIn: list[Decimal], bptTotalSupply: Decimal, swapFee: Decimal):
         ...
-    
+
     def calcDueTokenProtocolSwapFeeAmount(amplificationParameter: Decimal, balances: list[Decimal], lastIvariant: Decimal, tokenIndex: int, protocolSwapFeePercentage: Decimal):
         # /**************************************************************************************************************
         # // oneTokenSwapFee - polynomial equation to solve                                                            //
@@ -51,16 +51,16 @@ class StableMath:
             balances,
             lastInvariant,
             tokenIndex)
-        
+
         if(balances[tokenIndex] > finalBalanceFeeToken):
             accumulatedTokenSwapFees = balances[tokenIndex] - finalBalanceFeeToken
         else:
             accumulatedTokenSwapFees = 0
-            
+
         return accumulatedTokenSwapFees
 
     def calcInGivenOut(amplificationParameter: Decimal, balances: list[Decimal], tokenIndexIn: int, tokenIndexOut: int, tokenAmountOut: Decimal):
-        
+
         # /**************************************************************************************************************
         # // inGivenOut token x for y - polynomial equation to solve                                                   //
         # // ax = amount in to calculate                                                                               //
@@ -75,20 +75,20 @@ class StableMath:
 
         invariant = calculateInvariant(amplificationParameter, balances)
         balances[tokenIndexOut] = balances[tokenIndexOut] - tokenAmountOut
-        
+
         finalBalanceIn = getTokenBalanceGivenInvariantAndAllOtherBalances(
             amplificationParameter,
             balances,
             invariant,
             tokenIndexIn
         )
-        
+
         balances[tokenIndexOut] = balances[tokenIndexOut]+ tokenAmountOut
         return finalBalanceIn - balances[tokenIndexIn] + 1/1e18
- 
-        
+
+
     def calcOutGivenIn(amplificationParameter: Decimal, balances: list[Decimal], tokenIndexIn: int, tokenIndexOut: int, tokenAmountIn: Decimal):
-        
+
         # /**************************************************************************************************************
         # // outGivenIn token x for y - polynomial equation to solve                                                   //
         # // ay = amount out to calculate                                                                              //
@@ -106,12 +106,36 @@ class StableMath:
     # Flow of calculations:
     #  amountBPTOut -> newInvariant -> (amountInProportional, amountInAfterFee) ->
     #  amountInPercentageExcess -> amountIn
-        
-    def calcTokenInGivenExactBptOut():
-        ...
 
-    def calcTokensOutGivenExactBptIn():
-        
+    @staticmethod
+    def calcTokenInGivenExactBptOut(amplificationParameter: Decimal, balances: list[Decimal], tokenIndex: int, bptAmountOut: Decimal, bptTotalSupply: Decimal, swapFeePercentage: Decimal):
+        # Token in so we round up overall
+
+        #Get the current invariant
+        currentInvariant = Decimal(calculateInvariant(amplificationParameter, balances))
+
+        # Calculate new invariant
+        newInvariant = divUp((bptTotalSupply + bptAmountOut), mulUp(bptTotalSupply, currentInvariant)) # TODO given int instead of Decimal
+
+        # First calculate the sum of all token balances, which will be used
+        # to calculate the current weight of each token
+        sumBalances = Decimal(0)
+        for i in range(len(balances)):
+            sumBalances += i
+
+        # get amountInAfterFee
+        newBalanceTokenIndex = self.getTokenBalanceGivenInvariantAndAllOtherBalances(amplificationParameter, balances, newInvariant, tokenIndex)
+        amountInAfterFee = newBalanceTokenIndex - balances[tokenIndex]
+
+        # Get tokenBalancePercentageExcess
+        currentWeight = divDown(balances[tokenIndex], sumBalances)
+        tokenBalancePercentageExcess = currentWeight # TODO missing .complement()
+        swapFeeExcess = mulUp(swapFeePercentage, tokenBalancePercentageExcess)
+
+        return divUp(amountInAfterFee, swapFeeExcess) # TODO missing .compliment()
+
+    def calcTokensOutGivenExactBptIn(self, balances: list[Decimal], bptAmountIn: Decimal, bptTotalSupply: Decimal):
+
         # /**********************************************************************************************
         # // exactBPTInForTokensOut                                                                    //
         # // (per token)                                                                               //
@@ -120,11 +144,16 @@ class StableMath:
         # // bptIn = bptAmountIn             \     bptTotalSupply    /                                 //
         # // bpt = bptTotalSupply                                                                      //
         # **********************************************************************************************/
-        ...
-        
-    # Flow of calculations:
-    #  amountBPTin -> newInvariant -> (amountOutProportional, amountOutBeforeFee) ->
-    #  amountOutPercentageExcess -> amountOut
+
+        bptRatio = divDown(bptAmountIn, bptTotalSupply)
+        amountsOut = []
+
+        for i in range(len(balances)):
+            amountsOut[i] = mulDown(balances[i], bptRatio)
+
+        # Flow of calculations:
+        #  amountBPTin -> newInvariant -> (amountOutProportional, amountOutBeforeFee) ->
+        #  amountOutPercentageExcess -> amountOut
 
     def calcTokenOutGivenExactBptIn():
         ...
@@ -132,9 +161,9 @@ class StableMath:
 
     # ------------------------------------
 
-    def getTokenBalanceGivenInvariantAndAllOtherBalances(amplificationParameter: Decimal, balances: list[Decimal], invariant: Decimal, tokenIndex: int) -> Decimal:
+    def getTokenBalanceGivenInvariantAndAllOtherBalances(self, amplificationParameter: Decimal, balances: list[Decimal], invariant: Decimal, tokenIndex: int) -> Decimal:
         getcontext().prec = 18
-        
+
         ampTimesTotal = amplificationParameter * len(balances)
         bal_sum = Decimal(sum(balances))
 
@@ -164,8 +193,9 @@ class StableMath:
 
         return tokenBalance
 
+    @staticmethod
     def calculateInvariant(amplificationParameter: Decimal, balances: list[Decimal]) -> int:
-        
+
         # /**********************************************************************************************
         # // invariant                                                                                 //
         # // D = invariant                                                  D^(n+1)                    //
@@ -174,7 +204,7 @@ class StableMath:
         # // P = product of balances                                                                   //
         # // n = number of tokens                                                                      //
         # *********x************************************************************************************/
-        
+
         bal_sum = 0
         for bal in balances:
             bal_sum += bal
