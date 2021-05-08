@@ -151,6 +151,8 @@ class StableMath:
         for i in range(len(balances)):
             amountsOut[i] = mulDown(balances[i], bptRatio)
 
+        return amountsOut
+
         # Flow of calculations:
         #  amountBPTin -> newInvariant -> (amountOutProportional, amountOutBeforeFee) ->
         #  amountOutPercentageExcess -> amountOut
