@@ -16,8 +16,47 @@ class StableMath:
     #  amountsTokenOut -> amountsOutProportional ->
     #  amountOutPercentageExcess -> amountOutBeforeFee -> newInvariant -> amountBPTIn
 
-    def calcBptInGivenExactTokensOut(amplificationParameter: Decimal, balances: list[Decimal], amountsOut: list[Decimal], bptTotalSupply: Decimal, swapFee: Decimal) -> int:
-        return 0
+def calcBptInGivenExactTokensOut(amplificationParameter: int, balances: list, amountsOut: list, bptTotalSupply: int, swapFee: int) -> int:
+    """
+    >>> t = StableMath()
+    >>> t.calcBptInGivenExactTokensOut(2,[222,3112,311],[11,22,310],2,4) == 2
+    True
+    """
+
+    currentInvariants = StableMath.calculateInvariant(amplificationParameter, balances)
+
+    # calculate the sum of all token balances
+    sumBalances = Decimal(0)
+    for i in range(len(balances)):
+        sumBalances += balances[i]
+
+    tokenBalanceRatiosWithoutFee = [None] * len(balances)
+    weightedBalanceRatio = Decimal(0)
+
+    getcontext().prec = 18
+    for i in range(len(balances)):
+        currentWeight = divUp(balances[i], sumBalances)
+        tokenBalanceRatiosWithoutFee[i] = balances[i] - divUp(amountsOut[i], balances[i])
+        weightedBalanceRatio = weightedBalanceRatio + mulUp(tokenBalanceRatiosWithoutFee[i], currentWeight)
+
+    newBalances = []
+    for i in range(len(balances)):
+        tokenBalancePercentageExcess = 0
+        if weightedBalanceRatio <= tokenBalanceRatiosWithoutFee[i]:
+            tokenBalancePercentageExcess = 0
+        else:
+            tokenBalancePercentageExcess = weightedBalanceRatio - Decimal(divUp(tokenBalanceRatiosWithoutFee[i], complement(tokenBalanceRatiosWithoutFee[i])))
+
+        swapFeeExcess = mulUp(swapFee, tokenBalancePercentageExcess)
+        amountOutBeforeFee = Decimal(divUp(amountsOut[i], complement(swapFeeExcess)))
+        newBalances[i] = balances[i] - amountOutBeforeFee
+
+    # get the new invariant, taking into account swap fees
+    newInvariant = calculateInvariant(amplificationParameter, newBalances)
+
+    # return amountBPTIn
+    return bptTotalSupply * Decimal(divUp(newInvariant, complement(currentInvariants)))
+
 
     # Flow of calculations:
     #  amountsTokenIn -> amountsInProportional ->
