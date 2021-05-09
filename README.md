@@ -1,6 +1,6 @@
-![](https://github.com/balancer-labs/balancer-core-v2/blob/master/logo.svg)
-[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
+# <img src="logo.svg" alt="Balancer" height="128px">
 
+# Balancer V2 Model
 
 ## Setup:
 
