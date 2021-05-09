@@ -11,6 +11,6 @@ yarn test
 ```
 
 to run tests:
-from the `balancerV2_Model/balancer-core-v2` directory
+from the balancerV2_Model/balancer-core-v2 directory
 
 `yarn test`
