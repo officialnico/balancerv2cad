@@ -1,6 +1,10 @@
 ## Setup:
 
+
 go into the root of the dir after cloning
+
+-> have node installed
+-> have yarn installed (`npm install -g yarn`)
 
 ```
 git clone https://github.com/balancer-labs/balancer-core-v2.git
