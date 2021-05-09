@@ -1,4 +1,4 @@
-# <img src="logo.svg" alt="Balancer" height="128px">
+# <img src="https://github.com/balancer-labs/balancer-core-v2/blob/master/logo.svg" alt="Balancer" height="128px">
 
 # Balancer V2 Model
 
