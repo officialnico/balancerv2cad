@@ -3,7 +3,7 @@
 
 go into the root of the dir after cloning
 
-- have node installed
+- have node installed (check with `npm -v`)
 -  have yarn installed (`npm install -g yarn`)
 
 ```
