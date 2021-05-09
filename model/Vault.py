@@ -26,7 +26,7 @@ class Vault:
     def getPoolTokenInfo(self, cash: Decimal, managed: Decimal, blockNumber: int, assetManager: int):
         ...
 
-    def getPoolTokens(self, tokens: list, balances: list[Decimal], lastChangeBlock: int)
+    def getPoolTokens(self, tokens: list, balances: list[Decimal], lastChangeBlock: int):
         ...
 
     def joinPool(self, poolId: int, sender_id: int, recipent_id: int):
