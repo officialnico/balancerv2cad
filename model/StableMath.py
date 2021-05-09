@@ -124,7 +124,7 @@ class StableMath:
             sumBalances += i
 
         # get amountInAfterFee
-        newBalanceTokenIndex = self.getTokenBalanceGivenInvariantAndAllOtherBalances(amplificationParameter, balances, newInvariant, tokenIndex)
+        newBalanceTokenIndex = getTokenBalanceGivenInvariantAndAllOtherBalances(amplificationParameter, balances, newInvariant, tokenIndex)
         amountInAfterFee = newBalanceTokenIndex - balances[tokenIndex]
 
         # Get tokenBalancePercentageExcess
@@ -134,7 +134,7 @@ class StableMath:
 
         return divUp(amountInAfterFee, swapFeeExcess) # TODO missing .compliment()
 
-    def calcTokensOutGivenExactBptIn(self, balances: list[Decimal], bptAmountIn: Decimal, bptTotalSupply: Decimal):
+    def calcTokensOutGivenExactBptIn(balances: list[Decimal], bptAmountIn: Decimal, bptTotalSupply: Decimal):
 
         # /**********************************************************************************************
         # // exactBPTInForTokensOut                                                                    //
@@ -163,7 +163,7 @@ class StableMath:
 
     # ------------------------------------
 
-    def getTokenBalanceGivenInvariantAndAllOtherBalances(self, amplificationParameter: Decimal, balances: list[Decimal], invariant: Decimal, tokenIndex: int) -> Decimal:
+    def getTokenBalanceGivenInvariantAndAllOtherBalances(amplificationParameter: Decimal, balances: list[Decimal], invariant: Decimal, tokenIndex: int) -> Decimal:
         getcontext().prec = 18
 
         ampTimesTotal = amplificationParameter * len(balances)
