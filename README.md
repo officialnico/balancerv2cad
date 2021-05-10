@@ -2,7 +2,7 @@
 
 # Balancer V2 Model
 
-### Contract Testing:
+### Contract Debugging:
 
 
 go into the root of the dir after cloning
