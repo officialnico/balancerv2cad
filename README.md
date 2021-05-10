@@ -2,7 +2,7 @@
 
 # Balancer V2 Model
 
-### Setup:
+### Contract Testing:
 
 
 go into the root of the dir after cloning
