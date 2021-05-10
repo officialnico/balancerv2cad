@@ -1,4 +1,4 @@
-from model.StableMath import StableMath
+from model.pools.stable.StableMath import StableMath
 import pytest
 
 @pytest.fixture()
