@@ -32,7 +32,7 @@ class Vault:
     def joinPool(self, poolId: int, sender_id: int, recipent_id: int):
         ...
 
-    def exitPool(poolId, sender, recipient):
+    def exitPool(poolId: int, sender: int, recipient: int):
         ...
 
     
@@ -68,6 +68,3 @@ class Vault:
     
 # managePoolBalance(
 #     PoolBalanceOp[] ops)
-    
-# getProtocolFeesCollector() 
-returns (ProtocolFeesCollector) 

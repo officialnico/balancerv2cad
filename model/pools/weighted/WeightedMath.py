@@ -1,5 +1,5 @@
 from decimal import Decimal
-from model.util import *
+from model.math.util import *
 
 MIN_WEIGHT = 0.01
 _MAX_WEIGHTED_TOKENS = 100
