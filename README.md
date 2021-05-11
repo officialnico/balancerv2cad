@@ -11,7 +11,7 @@ go into the root of the dir after cloning
 -  have yarn installed (check with `yarn -v`) if not then insall with `npm install -g yarn`
 
 ```
-git clone https://github.com/balancer-labs/balancer-core-v2.git
+git clone https://github.com/officialnico/balancer-core-v2.git
 cp package.json balancer-core-v2
 cd balancer-core-v2
 yarn
