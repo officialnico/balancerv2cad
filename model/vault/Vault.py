@@ -11,7 +11,7 @@ class Vault:
     def manageUserBalance(self): #not sure if we should include
         ...
 
-    def registerPool(self):
+    def registerPool(self): #return pool id
         ...
 
     def getPool(self):
