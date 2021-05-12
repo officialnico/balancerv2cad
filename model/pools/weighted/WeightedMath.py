@@ -83,7 +83,7 @@ class WeightedMath:
             # balanceRatiosWithFee[i] = balances[i].add(amountsIn[i]).divDown(balances[i]);
             # invariantRatioWithFees = invariantRatioWithFees.add(balanceRatiosWithFee[i].mulDown(normalized_weights[i]));
             balanceRatiosWithFee[i] = divDown((balances[i] + amountsIn[i]),balances[i])
-            invariantRatioWithFees = mulDown((invariantRatioWithFees + balanceRatiosWithFee[i]),normalizedWeights[i]) #.add(balanceRatiosWithFee[i].mulDown(normalized_weights[i]));
+            invariantRatioWithFees = mulDown((invariantRatioWithFees + balanceRatiosWithFee[i]),normalized_weights[i]) #.add(balanceRatiosWithFee[i].mulDown(normalized_weights[i]));
 
         invariantRatio = 1
         for i in range(len(balances)):
@@ -97,7 +97,7 @@ class WeightedMath:
                 amountInWithoutFee = amountsIn[i]
 
             balanceRatio = divDown((balances[i]+amountInWithoutFee),balances[i])
-            invariantRatio = mulDown(invariantRatio,(powDown(balanceRatio,normalizedWeights[i])))
+            invariantRatio = mulDown(invariantRatio,(powDown(balanceRatio,normalized_weights[i])))
 
         if(invariantRatio>=1):
             return mulDown(bptTotalSupply,(invariantRatio-1))
