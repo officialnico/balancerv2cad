@@ -12,14 +12,6 @@ import unittest
 class TestStableMath(unittest.TestCase):
 
 
-    # def test_calcBptInGivenExactTokensOut(stablemath_test):
-
-    #     assert StableMath.calcBptInGivenExactTokensOut(
-    #         Decimal(2),
-    #         [Decimal(222),Decimal(3112),Decimal(311)],
-    #         [Decimal(11),Decimal(22),Decimal(310)],
-    #         Decimal(2),Decimal(4)
-    #         ) == 2
 
     def test_calcBptOutGivenExactTokensIn(stablemath_test):
         #TODO assert StableMath.calcBptOutGivenExactTokensIn(22,[2,3,4,20],[2,1,2,1000],3,4) == 56.
@@ -66,3 +58,13 @@ class TestStableMath(unittest.TestCase):
             [Decimal(2),Decimal(3),Decimal(4),Decimal(20)],
             Decimal(1),
             2), Decimal)
+
+
+    # def test_calcBptInGivenExactTokensOut(stablemath_test):
+
+    #     assert StableMath.calcBptInGivenExactTokensOut(
+    #         Decimal(2),
+    #         [Decimal(222),Decimal(3112),Decimal(311)],
+    #         [Decimal(11),Decimal(22),Decimal(310)],
+    #         Decimal(2),Decimal(4)
+    #         ) == 2
