@@ -1,7 +1,10 @@
 from decimal import *
+from typing import List
 from attr import dataclass
 from math import ceil, floor
 from model.pools.util import *
+from enforce_typing import enforce_types
+
 
 @dataclass
 class BalancerMathResult:
@@ -11,9 +14,8 @@ class BalancerMathResult:
 class StableMath:
 
 # -------------------------------------
-
     @staticmethod
-    def calculateInvariant(amplificationParameter: Decimal, balances: list[Decimal]) -> int:
+    def calculateInvariant(amplificationParameter: Decimal, balances: List[Decimal]) -> Decimal:
 
         # /**********************************************************************************************
         # // invariant                                                                                 //
@@ -45,16 +47,16 @@ class StableMath:
                     break
             elif(prevInvariant - invariant <= 1):
                 break
-        return invariant
+        return Decimal(invariant)
 
 
 
     # Flow of calculations:
     #  amountsTokenOut -> amountsOutProportional ->
     #  amountOutPercentageExcess -> amountOutBeforeFee -> newInvariant -> amountBPTIn
-
     @staticmethod
-    def calcBptInGivenExactTokensOut(amplificationParameter: int, balances: list, amountsOut: list, bptTotalSupply: int, swapFee: int) -> int:
+    @enforce_types
+    def calcBptInGivenExactTokensOut(amplificationParameter: Decimal, balances: list, amountsOut: list, bptTotalSupply: Decimal, swapFee: Decimal) -> Decimal:
         currentInvariants = StableMath.calculateInvariant(amplificationParameter, balances)
 
         # calculate the sum of all token balances
@@ -77,13 +79,13 @@ class StableMath:
             if weightedBalanceRatio <= tokenBalanceRatiosWithoutFee[i]:
                 tokenBalancePercentageExcess = 0
             else:
-                tokenBalancePercentageExcess = weightedBalanceRatio - Decimal(divUp(tokenBalanceRatiosWithoutFee[i], complement(tokenBalanceRatiosWithoutFee[i])))
+                tokenBalancePercentageExcess = weightedBalanceRatio - Decimal(divUp(tokenBalanceRatiosWithoutFee[i], Decimal(complement(tokenBalanceRatiosWithoutFee[i]))))
 
-            swapFeeExcess = mulUp(swapFee, tokenBalancePercentageExcess)
+            swapFeeExcess = mulUp(swapFee, Decimal(tokenBalancePercentageExcess))
             amountOutBeforeFee = Decimal(divUp(amountsOut[i], complement(swapFeeExcess)))
-            newBalances[i] = balances[i] - amountOutBeforeFee
+            newBalances.append(balances[i] - amountOutBeforeFee)
 
-        # get the new invariant, taking into account swap fees
+        # get the new invariant, taking Decimalo account swap fees
         newInvariant = StableMath.calculateInvariant(amplificationParameter, newBalances)
 
         # return amountBPTIn
@@ -103,20 +105,22 @@ class StableMath:
     #  amountInAfterFee = amountIn * (1 - amountInPercentageExcess * swapFeePercentage)
 
     @staticmethod
-    def calcBptOutGivenExactTokensIn(amplificationParameter: Decimal, balances: list[Decimal], amountsIn: list[Decimal], bptTotalSupply: Decimal, swapFee: Decimal, swapFeePercentage: Decimal):
+    @enforce_types
+
+    def calcBptOutGivenExactTokensIn(amplificationParameter: Decimal, balances: List[Decimal], amountsIn: List[Decimal], bptTotalSupply: Decimal, swapFee: Decimal, swapFeePercentage: Decimal) -> Decimal:
         # get current invariant
         currentInvariant = StableMath.calculateInvariant(amplificationParameter, balances)
 
         sumBalances = Decimal(0)
         for i in range(len(balances)):
-            sumBalances += i
+            sumBalances += balances[i]
 
         # Calculate the weighted balance ratio without considering fees
         tokenBalanceRatiosWithoutFee = []
         weightedBalanceRatio = 0
         for i in range(len(balances)):
-            currentWeight = divDown(balances[i], sumBalances)
-            tokenBalanceRatiosWithoutFee[i] = balances[i] + divDown(amountsIn[i], balances[i])
+            currentWeight = divDown(Decimal(balances[i]), Decimal(sumBalances))
+            tokenBalanceRatiosWithoutFee.append(balances[i] + divDown(Decimal(amountsIn[i]), Decimal(balances[i])))
             weightedBalanceRatio = weightedBalanceRatio + mulDown(tokenBalanceRatiosWithoutFee[i], currentWeight)
 
         tokenBalancePercentageExcess = Decimal(0)
@@ -127,18 +131,20 @@ class StableMath:
             else:
                 tokenBalancePercentageExcess = tokenBalanceRatiosWithoutFee[i] - divUp(weightedBalanceRatio, (tokenBalanceRatiosWithoutFee[i])) # TODO omitted subtracting ONE from token without fee
 
-            swapFeeExcess = mulUp(swapFeePercentage, tokenBalancePercentageExcess)
-            amountInAfterFee = mulDown(amountsIn[i], complement(swapFeeExcess))
-            newBalances[i] = balances[i] + amountInAfterFee
+            swapFeeExcess = mulUp(Decimal(swapFeePercentage), tokenBalancePercentageExcess)
+            amountInAfterFee = mulDown(Decimal(amountsIn[i]), Decimal(complement(swapFeeExcess)))
+            newBalances.append(balances[i] + amountInAfterFee)
 
-        # get new invariant, taking swap fees into account
+        # get new invariant, taking swap fees Decimalo account
 
-        newInvariant = StableMath.calculateInvariant(amplificationParameter, newBalances)
+        newInvariant = Decimal(StableMath.calculateInvariant(amplificationParameter, newBalances))
         # return amountBPTOut
-        return mulDown(bptTotalSupply, divDown(newInvariant, currentInvariant)) # TODO omitted subtracting ONE from current_invariant
+        return Decimal(mulDown(bptTotalSupply, divDown(newInvariant, currentInvariant))) # TODO omitted subtracting ONE from current_invariant
 
     @staticmethod
-    def calcDueTokenProtocolSwapFeeAmount(amplificationParameter: Decimal, balances: list[Decimal], lastInvariant: Decimal, tokenIndex: int, protocolSwapFeePercentage: Decimal):
+    @enforce_types
+
+    def calcDueTokenProtocolSwapFeeAmount(amplificationParameter: Decimal, balances: List[Decimal], lastInvariant: Decimal, tokenIndex: int, protocolSwapFeePercentage: Decimal):
         # /**************************************************************************************************************
         # // oneTokenSwapFee - polynomial equation to solve                                                            //
         # // af = fee amount to calculate in one token                                                                 //
@@ -164,7 +170,9 @@ class StableMath:
         return accumulatedTokenSwapFees
 
     @staticmethod
-    def calcInGivenOut(amplificationParameter: Decimal, balances: list[Decimal], tokenIndexIn: int, tokenIndexOut: int, tokenAmountOut: Decimal):
+    @enforce_types
+
+    def calcInGivenOut(amplificationParameter: Decimal, balances: List[Decimal], tokenIndexIn: int, tokenIndexOut: int, tokenAmountOut: Decimal):
 
         # /**************************************************************************************************************
         # // inGivenOut token x for y - polynomial equation to solve                                                   //
@@ -189,10 +197,12 @@ class StableMath:
         )
 
         balances[tokenIndexOut] = balances[tokenIndexOut]+ tokenAmountOut
-        return finalBalanceIn - balances[tokenIndexIn] + 1/1e18
+        return finalBalanceIn - balances[tokenIndexIn] + Decimal(1/1e18)
 
     @staticmethod
-    def calcOutGivenIn(amplificationParameter: Decimal, balances: list[Decimal], tokenIndexIn: int, tokenIndexOut: int, tokenAmountIn: Decimal):
+    @enforce_types
+
+    def calcOutGivenIn(amplificationParameter: Decimal, balances: List[Decimal], tokenIndexIn: int, tokenIndexOut: int, tokenAmountIn: Decimal):
 
         # /**************************************************************************************************************
         # // outGivenIn token x for y - polynomial equation to solve                                                   //
@@ -220,7 +230,9 @@ class StableMath:
         #  amountInPercentageExcess -> amountIn
 
     @staticmethod
-    def calcTokenInGivenExactBptOut(amplificationParameter: Decimal, balances: list[Decimal], tokenIndex: int, bptAmountOut: Decimal, bptTotalSupply: Decimal, swapFeePercentage: Decimal):
+    @enforce_types
+
+    def calcTokenInGivenExactBptOut(amplificationParameter: Decimal, balances: List[Decimal], tokenIndex: int, bptAmountOut: Decimal, bptTotalSupply: Decimal, swapFeePercentage: Decimal):
         # Token in so we round up overall
 
         #Get the current invariant
@@ -247,7 +259,9 @@ class StableMath:
         return divUp(amountInAfterFee, complement(complement(swapFeeExcess)))
 
     @staticmethod
-    def calcTokensOutGivenExactBptIn(balances: list[Decimal], bptAmountIn: Decimal, bptTotalSupply: Decimal):
+    @enforce_types
+
+    def calcTokensOutGivenExactBptIn(balances: List[Decimal], bptAmountIn: Decimal, bptTotalSupply: Decimal) -> List[Decimal]:
 
         # /**********************************************************************************************
         # // exactBPTInForTokensOut                                                                    //
@@ -262,7 +276,7 @@ class StableMath:
         amountsOut = []
 
         for i in range(len(balances)):
-            amountsOut[i] = mulDown(balances[i], bptRatio)
+            amountsOut.append(mulDown(balances[i], bptRatio))
 
         return amountsOut
 
@@ -271,7 +285,9 @@ class StableMath:
         #  amountOutPercentageExcess -> amountOut
 
     @staticmethod
-    def calcTokenOutGivenExactBptIn(amplificationParameter, balances: list[Decimal], tokenIndex: int, bptAmountIn: Decimal, bptTotalSupply: Decimal, swapFeePercentage: Decimal):
+    @enforce_types
+
+    def calcTokenOutGivenExactBptIn(amplificationParameter, balances: List[Decimal], tokenIndex: int, bptAmountIn: Decimal, bptTotalSupply: Decimal, swapFeePercentage: Decimal):
         # Get current invariant
         currentInvariant = StableMath.calculateInvariant(amplificationParameter, balances)
         # calculate the new invariant
@@ -298,7 +314,9 @@ class StableMath:
 
     # ------------------------------------
     @staticmethod
-    def getTokenBalanceGivenInvariantAndAllOtherBalances(amplificationParameter: Decimal, balances: list[Decimal], invariant: Decimal, tokenIndex: int) -> Decimal:
+    @enforce_types
+
+    def getTokenBalanceGivenInvariantAndAllOtherBalances(amplificationParameter: Decimal, balances: List[Decimal], invariant: Decimal, tokenIndex: int) -> Decimal:
         getcontext().prec = 18
 
         ampTimesTotal = amplificationParameter * len(balances)
