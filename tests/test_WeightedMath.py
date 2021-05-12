@@ -10,6 +10,7 @@ class TestWeightedMath:
 		result = WeightedMath.calculate_invariant(normalized_weight, balances)
 		assert isinstance(result, Decimal)
 
+
 	def test_calc_out_given_in(weightedmath_test):
 		balance_in = Decimal(100)
 		weight_in = Decimal(0.00769)
@@ -46,4 +47,5 @@ class TestWeightedMath:
 		swapFee = Decimal(1)
 		result = WeightedMath.calcBptInGivenExactTokensOut(balances, normalized_weights, bptAmountOut, bptTotalSupply, swapFee)
 		assert isinstance(result, Decimal)
+
 

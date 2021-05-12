@@ -69,6 +69,3 @@ class Vault:
     
 # managePoolBalance(
 #     PoolBalanceOp[] ops)
-    
-# getProtocolFeesCollector() 
-# returns (ProtocolFeesCollector) 
