@@ -2,7 +2,7 @@ from decimal import Decimal
 from model.pools.util import *
 from typing import List
 import sys  # todo delete later
-from enforce_typing import enforce_types
+# from enforce_typing import enforce_types
 
 MIN_WEIGHT = 0.01
 _MAX_WEIGHTED_TOKENS = 100
@@ -75,7 +75,7 @@ class WeightedMath:
         return mulUp(balance_in, ratio)
 
     @staticmethod
-    @enforce_types
+    # @enforce_types
     def calc_bpt_out_given_exact_tokens_in(balances: List[Decimal], normalized_weights: List[Decimal], amounts_in: List[Decimal],
                                            bptTotalSupply: Decimal,
                                            swap_fee: Decimal):
@@ -108,7 +108,7 @@ class WeightedMath:
             return 0
 
     @staticmethod
-    @enforce_types
+    # @enforce_types
     def calc_token_in_given_exact_bpt_out(
         balance: Decimal,
         normalized_weight: Decimal,
@@ -138,7 +138,7 @@ class WeightedMath:
         return non_taxable_amount + (divUp(taxable_amount, complement(swap_fee)))
 
     @staticmethod
-    @enforce_types
+    # @enforce_types
     def calc_bpt_in_given_exact_tokens_out(
         balances: List[Decimal],
         normalized_weights: List[Decimal],
@@ -167,7 +167,7 @@ class WeightedMath:
         return mulUp(bpt_total_supply, complement(invariant_ratio))
 
     @staticmethod
-    @enforce_types
+    # @enforce_types
     def calc_token_out_given_exact_bpt_in(
         balance: Decimal,
         normalized_weight: Decimal,
@@ -195,12 +195,12 @@ class WeightedMath:
         return non_taxable_amount + mulDown(taxable_amount, complement(swap_fee))
 
     @staticmethod
-    @enforce_types
+    # @enforce_types
     def calc_tokens_out_given_exact_bpt_in(
         balances: List[Decimal],
         bpt_amount_in: Decimal,
         total_bpt: Decimal
-    ) -> Decimal:
+    ) -> List:
 
         # /**********************************************************************************************
         # // exactBPTInForTokensOut                                                                    //
@@ -218,7 +218,7 @@ class WeightedMath:
         return amounts_out
 
     @staticmethod
-    @enforce_types
+    # @enforce_types
     def calc_due_token_protocol_swap_fee_amount(
         balance: Decimal,
         normalized_weight: Decimal,
