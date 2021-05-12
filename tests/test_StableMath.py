@@ -1,3 +1,4 @@
+from typing import List
 from model.pools.stable.StableMath import StableMath
 from decimal import Decimal
 import unittest
@@ -69,19 +70,19 @@ class TestStableMath(unittest.TestCase):
 
     def test_calcTokenOutGivenExactBptIn(stablemath_test):
         balances = [Decimal(10),Decimal(11)]
-        bptAmountIn = 10
-        bptTotalSupply =2
+        bptAmountIn = Decimal(10)
+        bptTotalSupply =Decimal(2)
         result = StableMath.calcTokensOutGivenExactBptIn(balances,bptAmountIn, bptTotalSupply)
-        assert isinstance(result, Decimal)
+        assert isinstance(result, list)
 
     def test_calcTokensOutGivenExactBptIn(stablemath_test):
         balances = [Decimal(10),Decimal(11)]
-        bptAmountIn = 10
-        bptTotalSupply =2
+        bptAmountIn = Decimal(10)
+        bptTotalSupply =Decimal(2)
         result = StableMath.calcTokensOutGivenExactBptIn(balances,bptAmountIn,bptTotalSupply)
-        assert isinstance(result, Decimal)
+        assert isinstance(result, list)
     def test_calculateInvariantTwoTokens(self):
-        amp = 100
+        amp = Decimal(100)
         balances = [10,12]
         result =  StableMath.calculateInvariant(amp, balances)
         assert isinstance(result, Decimal)
