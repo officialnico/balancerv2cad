@@ -1,5 +1,6 @@
 from decimal import Decimal
-from model.math.util import *
+from model.pools.util import *
+from typing import List
 
 MIN_WEIGHT = 0.01
 _MAX_WEIGHTED_TOKENS = 100
@@ -11,7 +12,7 @@ _MIN_INVARIANT_RATIO = 0.7
 class WeightedMath:
 
     @staticmethod
-    def calculateInvariant(normalizedWeights: list[Decimal], balances: list[Decimal]):
+    def calculate_invariant(normalized_weights: List[Decimal], balances: List[Decimal]):
 
         # /**********************************************************************************************
         # // invariant               _____                                                             //
@@ -21,15 +22,15 @@ class WeightedMath:
         # **********************************************************************************************/
 
         invariant = 1
-        for i in range(len(normalizedWeights)) -> Decimal:
-            invariant = mulDown(invariant,(powDown(balances[i],normalizedWeights[i])))
+        for i in range(len(normalized_weights)):
+            invariant = mulDown(invariant, (powDown(balances[i], normalized_weights[i])))
         return invariant
 
     @staticmethod
-    def calcOutGivenIn(balanceIn: Decimal, weightIn: Decimal,
-        balanceOut: Decimal,
-        weightOut: Decimal,
-        amountIn: Decimal) -> Decimal:
+    def calc_out_given_in(balance_in: Decimal, weight_in: Decimal,
+                          balance_out: Decimal,
+                          weight_out: Decimal,
+                          amount_in: Decimal) -> Decimal:
 
         # /**********************************************************************************************
         # // outGivenIn                                                                                //
@@ -41,49 +42,49 @@ class WeightedMath:
         # // wO = weightOut                                                                            //
         # **********************************************************************************************/
 
-        denominator = balanceIn + amountIn
-        base = divUp(balanceIn,denominator) #balanceIn.divUp(denominator);
-        exponent = divDown(weightIn,weightOut) #weightIn.divDown(weightOut);
+        denominator = balance_in + amount_in
+        base = divUp(balance_in, denominator) #balanceIn.divUp(denominator);
+        exponent = divDown(weight_in, weight_out) #weightIn.divDown(weightOut);
         power = powUp(base,exponent) #base.powUp(exponent);
 
-        return mulDown(balanceOut, complement(power)) #balanceOut.mulDown(power.complement());
+        return mulDown(balance_out, complement(power)) #balanceOut.mulDown(power.complement());
 
     @staticmethod
-    def calcInGivenOut(balanceIn: Decimal, balanceIn: Decimal,
-        weightIn: Decimal,
-        balanceOut: Decimal,
-        weightOut: Decimal,
-        amountOut: Decimal):
+    def calc_in_given_out(balance_in: Decimal,
+                          weight_in: Decimal,
+                          balance_out: Decimal,
+                          weight_out: Decimal,
+                          amount_out: Decimal):
 
         # /**********************************************************************************************
         # // inGivenOut                                                                                //
-        # // aO = amountOut                                                                            //
-        # // bO = balanceOut                                                                           //
-        # // bI = balanceIn              /  /            bO             \    (wO / wI)      \          //
-        # // aI = amountIn    aI = bI * |  | --------------------------  | ^            - 1  |         //
-        # // wI = weightIn               \  \       ( bO - aO )         /                   /          //
-        # // wO = weightOut                                                                            //
+        # // aO = amount_out                                                                            //
+        # // bO = balance_out                                                                           //
+        # // bI = balance_in              /  /            bO             \    (wO / wI)      \          //
+        # // aI = amount_in    aI = bI * |  | --------------------------  | ^            - 1  |         //
+        # // wI = weight_in               \  \       ( bO - aO )         /                   /          //
+        # // wO = weight_out                                                                            //
         # **********************************************************************************************/
 
-        base = divUp(balanceOut,(balanceOut-amountOut))
-        exponent = divUp(weightOut, weightIn)
+        base = divUp(balance_out, (balance_out - amount_out))
+        exponent = divUp(weight_out, weight_in)
         power = powUp(base, exponent)
         ratio = power - 1
-        return mulUp(balanceIn, ratio)
+        return mulUp(balance_in, ratio)
 
     @staticmethod
-    def calcBptOutGivenExactTokensIn(balances: list[Decimal], normalizedWeights[Decimal], amountsIn: list[Decimal],
+    def calc_bpt_out_given_exact_tokens_in(balances: List[Decimal], normalized_weights: List[Decimal], amountsIn: List[Decimal],
         bptTotalSupply: Decimal,
-        swapFee: Decimal):
+        swap_fee: Decimal):
 
         balanceRatiosWithFee = [None]*len(amountsIn)
         invariantRatioWithFees = 0
         for i in range(len(balances)):
             # balanceRatiosWithFee[i] = balances[i].add(amountsIn[i]).divDown(balances[i]);
-            # invariantRatioWithFees = invariantRatioWithFees.add(balanceRatiosWithFee[i].mulDown(normalizedWeights[i]));
+            # invariantRatioWithFees = invariantRatioWithFees.add(balanceRatiosWithFee[i].mulDown(normalized_weights[i]));
             balanceRatiosWithFee[i] = divDown((balances[i] + amountsIn[i]),balances[i])
-            invariantRatioWithFees = mulDown((invariantRatioWithFees + balanceRatiosWithFee[i]),normalizedWeights[i]) #.add(balanceRatiosWithFee[i].mulDown(normalizedWeights[i]));
-        
+            invariantRatioWithFees = mulDown((invariantRatioWithFees + balanceRatiosWithFee[i]),normalized_weights[i]) #.add(balanceRatiosWithFee[i].mulDown(normalized_weights[i]));
+
         invariantRatio = 1
         for i in range(len(balances)):
             amountInWithoutFee = None
@@ -91,13 +92,13 @@ class WeightedMath:
             if(balanceRatiosWithFee[i] > invariantRatioWithFees):
                 nonTaxableAmount = mulDown(balances[i],(invariantRatio-1))
                 taxableAmount = amountsIn[i] - nonTaxableAmount
-                amountInWithoutFee = nonTaxableAmount + (mulDown(taxableAmount,1-swapFee))
+                amountInWithoutFee = nonTaxableAmount + (mulDown(taxableAmount, 1 - swap_fee))
             else:
                 amountInWithoutFee = amountsIn[i]
 
             balanceRatio = divDown((balances[i]+amountInWithoutFee),balances[i])
-            invariantRatio = mulDown(invariantRatio,(powDown(balanceRatio,normalizedWeights[i])))
-        
+            invariantRatio = mulDown(invariantRatio,(powDown(balanceRatio,normalized_weights[i])))
+
         if(invariantRatio>=1):
             return mulDown(bptTotalSupply,(invariantRatio-1))
         else:
@@ -109,7 +110,7 @@ class WeightedMath:
         normalizedWeight: Decimal,
         bptAmountOut: Decimal,
         bptTotalSupply: Decimal,
-        swapFee: Decimal
+        swap_fee: Decimal
     ) -> Decimal:
 
         # /******************************************************************************************
@@ -127,7 +128,7 @@ class WeightedMath:
         taxablePercentage = complement(normalizedWeight)
         taxableAmount = mulUp(amountInWithoutFee, taxablePercentage)
         nonTaxableAmount = amountInWithoutFee - taxableAmount
-        return nonTaxableAmount + (divUp(taxableAmount,complement(swapFee)))
+        return nonTaxableAmount + (divUp(taxableAmount, complement(swap_fee)))
 
     @staticmethod
     def calcBptInGivenExactTokensOut(
@@ -135,7 +136,7 @@ class WeightedMath:
         normalizedWeights: list[Decimal],
         bptAmountOut: list[Decimal],
         bptTotalSupply: Decimal,
-        swapFee: Decimal
+        swap_fee: Decimal
     ) -> Decimal:
 
         balanceRatiosWithoutFee = [None]*len(amountsOut)
@@ -150,7 +151,7 @@ class WeightedMath:
             if(invariantRatioWithoutFees>balanceRatiosWithoutFee[i]):
                 nonTaxableAmount = mulDown(balances[i],(complement(invariantRatioWithoutFees)))
                 taxableAmount = amountsOut[i] - nonTaxableAmount
-                amountOutWithFee = nonTaxableAmount+(divUp(taxableAmount,complement(swapFee)))
+                amountOutWithFee = nonTaxableAmount+(divUp(taxableAmount, complement(swap_fee)))
             else:
                 amountOutWithFee = amountsOut[i]
             balanceRatio = divUp((balances[i]-amountOutWithFee),balances[i])
@@ -163,7 +164,7 @@ class WeightedMath:
         normalizedWeight: Decimal,
         bptAmountIn: Decimal,
         bptTotalSupply: Decimal,
-        swapFeel: Decimal
+        swapFee: Decimal
     ) -> Decimal:
 
         # /*****************************************************************************************
@@ -175,14 +176,14 @@ class WeightedMath:
         # // w = weight                                                                           //
         # *****************************************************************************************/
 
-        invariantRatio = divUp((bptTotalSupply - bptAmountIn),bptTotalSupply)    
-        balanceRatio = powUp(invariantRatio, (divDown(1,normalizedWeight))
+        invariantRatio = divUp((bptTotalSupply - bptAmountIn), bptTotalSupply)
+        balanceRatio = powUp(invariantRatio, (divDown(1,normalizedWeight)))
         amountOutWithoutFee = mulDown(balance, complement(balanceRatio))
-        taxablePercentage = complement(normalizedWeight).
-        taxableAmount = mulUp(amountOutWithoutFee, taxablePercentage);
+        taxablePercentage = complement(normalizedWeight)
+        taxableAmount = mulUp(amountOutWithoutFee, taxablePercentage)
         nonTaxableAmount = amountOutWithoutFee - taxableAmount
 
-        return nonTaxableAmount + mulDown(taxableAmount,complement(swapFeel))
+        return nonTaxableAmount + mulDown(taxableAmount,complement(swapFee))
 
     @staticmethod
     def calcTokensOutGivenExactBptIn(
@@ -213,11 +214,11 @@ class WeightedMath:
         previousInvariant: Decimal,
         currentInvariant: Decimal,
         protocolSwapFeePercentage: Decimal) -> Decimal:
-    
+
         # /*********************************************************************************
         # /*  protocolSwapFeePercentage * balanceToken * ( 1 - (previousInvariant / currentInvariant) ^ (1 / weightToken))
         # *********************************************************************************/
-        
+
         if(currentInvariant <= previousInvariant):
             return 0
 
