@@ -1,13 +1,17 @@
-## Setup:
+# <img src="https://github.com/balancer-labs/balancer-core-v2/blob/master/logo.svg" alt="Balancer" height="128px">
+
+# Balancer V2 Model
+
+### Contract Debugging:
 
 
 go into the root of the dir after cloning
 
 - have node installed (check with `npm -v`)
--  have yarn installed (`npm install -g yarn`)
+-  have yarn installed (check with `yarn -v`) if not then insall with `npm install -g yarn`
 
 ```
-git clone https://github.com/balancer-labs/balancer-core-v2.git
+git clone https://github.com/officialnico/balancer-core-v2.git
 cp package.json balancer-core-v2
 cd balancer-core-v2
 yarn
