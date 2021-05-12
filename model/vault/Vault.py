@@ -1,4 +1,5 @@
 from decimal import Decimal
+from typing import List
 
 class Vault:
 
@@ -17,16 +18,16 @@ class Vault:
     def getPool(self):
         ...
 
-    def registerTokens(self, poolId: int, tokens: list[Decimal], assetManagers: list[int]):
+    def registerTokens(self, poolId: int, tokens: List[Decimal], assetManagers: List[int]):
         ...
 
-    def deregisterTokens(self, poolId: int, tokens: list[Decimal]):
+    def deregisterTokens(self, poolId: int, tokens: List[Decimal]):
         ...
 
     def getPoolTokenInfo(self, cash: Decimal, managed: Decimal, blockNumber: int, assetManager: int):
         ...
 
-    def getPoolTokens(self, tokens: list, balances: list[Decimal], lastChangeBlock: int):
+    def getPoolTokens(self, tokens: list, balances: List[Decimal], lastChangeBlock: int):
         ...
 
     def joinPool(self, poolId: int, sender_id: int, recipent_id: int):
