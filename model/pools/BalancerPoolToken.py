@@ -32,3 +32,5 @@ class BalancerPoolToken:
         if(amount>self.balances[sender_id]): amount = self.balances[sender_id] #TODO maybe replace with assert
         self.balances[sender_id] -= amount
         self.balances[recipent_id] += amount
+
+        
