@@ -8,9 +8,12 @@ def mulUp(a: Decimal, b: Decimal):
 
 
 def divUp(a: Decimal, b: Decimal):
-    getcontext().prec = 18
-    getcontext().rounding = ROUND_UP
-    return a/b
+    if a * b == 0:
+        return 0
+    else:
+        getcontext().prec = 18
+        getcontext().rounding = ROUND_UP
+        return a/b
 
 
 def mulDown(a: Decimal, b: Decimal):
