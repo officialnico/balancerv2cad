@@ -1,0 +1,3 @@
+[submodule "balancer-core-v2"]
+	path = balancer-core-v2
+	url = https://github.com/officialnico/balancer-core-v2
