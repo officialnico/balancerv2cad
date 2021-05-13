@@ -28,7 +28,6 @@ class TestWeightedMath:
 		result = WeightedMath.calc_bpt_out_given_exact_tokens_in(balances, normalized_weights, amounts_in, bpt_total_supply, swap_fee)
 		assert isinstance(result, Decimal)
 
-
 	def test_calc_token_in_given_exact_bpt_out(weightedmath_test):
 		balance = Decimal(1)
 		normalized_weight = Decimal(10)

@@ -83,10 +83,12 @@ class WeightedMath:
         balance_ratios_with_fee = [None] * len(amounts_in)
         invariant_ratio_with_fees = 0
         for i in range(len(balances)):
+
             # balance_ratios_with_fee[i] = balances[i].add(amounts_in[i]).divDown(balances[i]);
             # invariant_ratio_with_fees = invariant_ratio_with_fees.add(balance_ratios_with_fee[i].mulDown(normalized_weights[i]));
             balance_ratios_with_fee[i] = divDown((balances[i] + amounts_in[i]), balances[i])
             invariant_ratio_with_fees = mulDown((invariant_ratio_with_fees + balance_ratios_with_fee[i]), normalized_weights[i]) #.add(balance_ratios_with_fee[i].mulDown(normalized_weights[i]));
+
 
         invariant_ratio = 1
         for i in range(len(balances)):
@@ -98,6 +100,7 @@ class WeightedMath:
                 amount_in_without_fee = non_taxable_amount + (mulDown(taxable_amount, 1 - swap_fee))
             else:
                 amount_in_without_fee = amounts_in[i]
+
 
             balance_ratio = divDown((balances[i] + amount_in_without_fee), balances[i])
             invariant_ratio = mulDown(invariant_ratio, (powDown(balance_ratio, normalized_weights[i])))
