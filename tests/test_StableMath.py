@@ -2,7 +2,7 @@ from model.pools.stable.StableMath import StableMath
 from decimal import Decimal
 import unittest
 # self.tester('calculateInvariant', self.calculateInvariant(20,[23,23]), 46)
-# self.tester('calcBptInGivenExactTokensOut', self.calcBptInGivenExactTokensOut(2,[222,3112,311],[11,22,310],2,4), 2)
+# self.tester('calc_bpt_in_given_exact_tokens_out', self.calc_bpt_in_given_exact_tokens_out(2,[222,3112,311],[11,22,310],2,4), 2)
 # # assert self.calc_bpt_out_given_exact_tokens_in(22,[2,3,4,20],[2,1,2,1000],3,4), 56
 # # assert self.calcInGivenOut(2,[222,3112,311],1,1,4), 0.000002756210410895
 # self.tester('getTokenBalanceGivenInvariantAndAllOtherBalances', self.getTokenBalanceGivenInvariantAndAllOtherBalances(22, [2,3,4,20], 1, 2), 0.002573235526125192)
@@ -11,6 +11,16 @@ import unittest
 
 class TestStableMath(unittest.TestCase):
 
+
+
+    # def test_calc_bpt_in_given_exact_tokens_out(stablemath_test):
+
+    #     assert StableMath.calc_bpt_in_given_exact_tokens_out(
+    #         Decimal(2),
+    #         [Decimal(222),Decimal(3112),Decimal(311)],
+    #         [Decimal(11),Decimal(22),Decimal(310)],
+    #         Decimal(2),Decimal(4)
+    #         ) == 2
 
 
     def test_calcBptOutGivenExactTokensIn(stablemath_test):

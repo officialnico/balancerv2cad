@@ -55,12 +55,6 @@ class StableMath:
 
     @staticmethod
     def calcBptInGivenExactTokensOut(amplificationParameter: int, balances: list, amountsOut: list, bptTotalSupply: int, swapFee: int) -> int:
-        """
-        >>> t = StableMath()
-        >>> t.calcBptInGivenExactTokensOut(2,[222,3112,311],[11,22,310],2,4) == 2
-        True
-        """
-
         currentInvariants = StableMath.calculateInvariant(amplificationParameter, balances)
 
         # calculate the sum of all token balances
@@ -141,7 +135,7 @@ class StableMath:
 
         newInvariant = StableMath.calculateInvariant(amplificationParameter, newBalances)
         # return amountBPTOut
-        return mulDown(bptTotalSupply, divDown(newInvariant, currentInvariant)) # TODO omitted subtracting ONE from currentInvariant
+        return mulDown(bptTotalSupply, divDown(newInvariant, currentInvariant)) # TODO omitted subtracting ONE from current_invariant
 
     @staticmethod
     def calcDueTokenProtocolSwapFeeAmount(amplificationParameter: Decimal, balances: list[Decimal], lastInvariant: Decimal, tokenIndex: int, protocolSwapFeePercentage: Decimal):
@@ -260,8 +254,8 @@ class StableMath:
         # // (per token)                                                                               //
         # // aO = tokenAmountOut             /        bptIn         \                                  //
         # // b = tokenBalance      a0 = b * | ---------------------  |                                 //
-        # // bptIn = bptAmountIn             \     bptTotalSupply    /                                 //
-        # // bpt = bptTotalSupply                                                                      //
+        # // bptIn = bpt_amount_in             \     bpt_total_supply    /                                 //
+        # // bpt = bpt_total_supply                                                                      //
         # **********************************************************************************************/
 
         bptRatio = divDown(bptAmountIn, bptTotalSupply)
