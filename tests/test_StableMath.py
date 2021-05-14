@@ -1,18 +1,25 @@
 from typing import List
 from model.pools.stable.StableMath import StableMath
-from decimal import Decimal
+from decimal import *
 import unittest
+
+getcontext().prec = 18
 # self.tester('calculateInvariant', self.calculateInvariant(20,[23,23]), 46)
 # self.tester('calc_bpt_in_given_exact_tokens_out', self.calc_bpt_in_given_exact_tokens_out(2,[222,3112,311],[11,22,310],2,4), 2)
 # # assert self.calc_bpt_out_given_exact_tokens_in(22,[2,3,4,20],[2,1,2,1000],3,4), 56
 # # assert self.calcInGivenOut(2,[222,3112,311],1,1,4), 0.000002756210410895
 # self.tester('getTokenBalanceGivenInvariantAndAllOtherBalances', self.getTokenBalanceGivenInvariantAndAllOtherBalances(22, [2,3,4,20], 1, 2), 0.002573235526125192)
+MAX_RELATIVE_ERROR = Decimal(0.001)
 
+def expectEqualWithError(result: Decimal, expected: Decimal):
+    if result <= expected + MAX_RELATIVE_ERROR and result >= expected - MAX_RELATIVE_ERROR:
+        return True
+    return False
 
 
 class TestStableMath(unittest.TestCase):
 
-
+    
 
     # def test_calc_bpt_in_given_exact_tokens_out(stablemath_test):
 
@@ -23,10 +30,62 @@ class TestStableMath(unittest.TestCase):
     #         Decimal(2),Decimal(4)
     #         ) == 2
 
+    def test_calculateInvariants(self):
+        '''
+        Tests for instance of Decimal
+        '''
+        amp = Decimal(100)
+        balances = [Decimal(10),Decimal(12)]
+        result =  StableMath.calculateInvariant(amp, balances)
+        assert isinstance(result, Decimal)
+        '''
+        Tests invariant for two tokens
+        expected = 22
+        '''
+        amp = Decimal(100)
+        balances = [Decimal(10),Decimal(12)]
+        result =  StableMath.calculateInvariant(amp, balances)
+        assert expectEqualWithError(result, Decimal(22))
+        '''
+        Tests invariant for three tokens
+        expected = 22
+        '''
+        amp = Decimal(100)
+        balances = [Decimal(10),Decimal(12), Decimal(14)]
+        result =  StableMath.calculateInvariant(amp, balances)
+        assert expectEqualWithError(result, Decimal(36))
+    def test_calcInGivenOut(stablemath_test):
+       #TODO assert StableMath.calcInGivenOut(2,[222,3112,311],1,1,4) == 0.000002756210410895
+        '''
+        Tests for instance of Decimal
+        '''
+        amp = Decimal(100)
+        balances = [Decimal(10), Decimal(12), Decimal(14)]
+        tokenIndexIn = 0
+        tokenIndexOut = 1
+        tokenAmountOut = Decimal(1)
+        result = StableMath.calcInGivenOut(amp, balances, tokenIndexIn, tokenIndexOut, tokenAmountOut)
+        assert isinstance(result, Decimal)
+        '''
+        Tests in given out for two tokens
+        '''
+        amp = Decimal(100)
 
+        balances = [Decimal(10), Decimal(12)]
+        tokenIndexIn = 0
+        tokenIndexOut = 1
+        tokenAmountOut = Decimal(1)
+        result = StableMath.calcInGivenOut(amp, balances, tokenIndexIn, tokenIndexOut, tokenAmountOut)
+        assert expectEqualWithError(result, Decimal(1))
+
+
+        
+        
     def test_calcBptOutGivenExactTokensIn(stablemath_test):
         #TODO assert StableMath.calc_bpt_out_given_exact_tokens_in(22,[2,3,4,20],[2,1,2,1000],3,4) == 56.
-
+        '''
+        Tests for instance of Decimal
+        '''
         amp = Decimal(22)
         balances = [Decimal(2), Decimal(3),Decimal(4), Decimal(20)]
         amountsIn = [Decimal(2), Decimal(1), Decimal(2), Decimal(1000)]
@@ -35,16 +94,11 @@ class TestStableMath(unittest.TestCase):
         swapFeePercentage = Decimal(.04)
         result = StableMath.calcBptOutGivenExactTokensIn(amp, balances, amountsIn,bptTotalsupply, swapFee,swapFeePercentage)
         assert isinstance(result, Decimal)
+        '''
+        
+        '''
 
-    def test_calcInGivenOut(stablemath_test):
-       #TODO assert StableMath.calcInGivenOut(2,[222,3112,311],1,1,4) == 0.000002756210410895
-        amp = Decimal(100)
-        balances = [Decimal(10), Decimal(12), Decimal(14)]
-        tokenIndexIn = 0
-        tokenIndexOut = 1
-        tokenAmountOut = Decimal(1)
-        result = StableMath.calcInGivenOut(amp, balances, tokenIndexIn, tokenIndexOut, tokenAmountOut)
-        assert isinstance(result, Decimal)
+    
 
     def test_calcOutGivenIn(stablemath_test):
         #    def calcOutGivenIn(amplificationParameter: Decimal, balances: list[Decimal], tokenIndexIn: int, tokenIndexOut: int, tokenAmountIn: Decimal):
@@ -83,11 +137,7 @@ class TestStableMath(unittest.TestCase):
         bptTotalSupply =Decimal(2)
         result = StableMath.calcTokensOutGivenExactBptIn(balances,bptAmountIn,bptTotalSupply)
         assert isinstance(result, list)
-    def test_calculateInvariantTwoTokens(self):
-        amp = Decimal(100)
-        balances = [10,12]
-        result =  StableMath.calculateInvariant(amp, balances)
-        assert isinstance(result, Decimal)
+    
 
     #TODO give critical results
     def test_getTokenBalanceGivenInvariantAndAllOtherBalances(self):
