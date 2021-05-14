@@ -200,10 +200,26 @@ class TestStableMath(unittest.TestCase):
             2), Decimal)
 
 
-        amp = Decimal(22)
-        balances = [Decimal(2),Decimal(3),Decimal(4),Decimal(20)]
-        invariant = Decimal(1)
-        tokenIndex = 2
+        amp = Decimal(10)
+        balances = [Decimal(11),Decimal(11),Decimal(12)]
+        invariant = Decimal(32.999999999)
+        tokenIndex = 1
 
         result = StableMath.getTokenBalanceGivenInvariantAndAllOtherBalances(amp, balances, invariant, tokenIndex)
-        assert expectEqualWithError(result, Decimal(0.002573235526125192))
+        assert expectEqualWithError(result, Decimal(10.008252123344772011))
+
+        amp = Decimal(100)
+        balances = [Decimal(10),Decimal(11)]
+        invariant = Decimal(10)
+        tokenIndex = 0
+
+        result = StableMath.getTokenBalanceGivenInvariantAndAllOtherBalances(amp, balances, invariant, tokenIndex)
+        assert expectEqualWithError(result, Decimal(0.098908137177552474646))
+
+        amp = Decimal(100)
+        balances = [Decimal(10),Decimal(11), Decimal(12)]
+        invariant = Decimal(10)
+        tokenIndex = 0
+
+        result = StableMath.getTokenBalanceGivenInvariantAndAllOtherBalances(amp, balances, invariant, tokenIndex)
+        assert expectEqualWithError(result, Decimal(0.00071756564425404818025))
