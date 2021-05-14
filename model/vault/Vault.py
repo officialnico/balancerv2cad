@@ -1,39 +1,40 @@
 from decimal import Decimal
 from typing import List
 
+
 class Vault:
 
     def __init__(self):
+        self.pool_balances = []
+
+    def get_internal_balance(self, user_id: int, tokens: list):
         ...
 
-    def getInternalBalance(self, user_id: int, tokens: list):
+    def manage_user_balance(self): #not sure if we should include
         ...
 
-    def manageUserBalance(self): #not sure if we should include
+    def register_pool(self): #return pool id
         ...
 
-    def registerPool(self): #return pool id
+    def get_pool(self):
         ...
 
-    def getPool(self):
+    def register_tokens(self, poolId: int, tokens: List[Decimal], assetManagers: List[int]):
         ...
 
-    def registerTokens(self, poolId: int, tokens: List[Decimal], assetManagers: List[int]):
+    def deregister_tokens(self, poolId: int, tokens: List[Decimal]):
         ...
 
-    def deregisterTokens(self, poolId: int, tokens: List[Decimal]):
+    def get_pool_token_info(self, cash: Decimal, managed: Decimal, blockNumber: int, assetManager: int):
         ...
 
-    def getPoolTokenInfo(self, cash: Decimal, managed: Decimal, blockNumber: int, assetManager: int):
+    def get_pool_tokens(self, tokens: list, balances: List[Decimal], lastChangeBlock: int):
         ...
 
-    def getPoolTokens(self, tokens: list, balances: List[Decimal], lastChangeBlock: int):
+    def join_pool(self, poolId: int, sender_id: int, recipent_id: int):
         ...
 
-    def joinPool(self, poolId: int, sender_id: int, recipent_id: int):
-        ...
-
-    def exitPool(poolId: int, sender: int, recipient: int):
+    def exit_pool(poolId: int, sender: int, recipient: int):
         ...
 
     

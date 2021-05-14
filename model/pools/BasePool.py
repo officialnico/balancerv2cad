@@ -1,7 +1,7 @@
 from decimal import Decimal
-from model.pools.BalancerPoolToken import BalancerPoolToken  
+from model.pools.BalancerPoolToken import BalancerPoolToken
 
-_MINIMUM_BPT = 1/1e6 
+_MINIMUM_BPT = 1/1e6
 
 class BasePool:
 
@@ -9,29 +9,30 @@ class BasePool:
         self.vault = vault
         self.name = name
         self.symbol = symbol
-        self.tokens = tokens.sort()
+        self.tokens = sorted(tokens)
         self.swap_fee_percentage = swap_fee_percentage
         self.owner_id = owner_id
-        self.pool_id = None #vault.registerPool(specialization)
+        self.pool_id = 0 #vault.registerPool(specialization)
 
         self.paused = False
         self.balancer_pool_token = BalancerPoolToken(self.name, self.symbol)
 
     def get_vault(self) -> object:
         return self.vault
-    
+
     def get_pool_id(self) -> int:
         return self.pool_id
-        
+
     def get_total_tokens(self) -> int:
         return len(self.tokens)
-    
+
     def get_swap_fee_percentage(self) -> Decimal:
         return self.swap_fee_percentage
 
     def set_swap_fee_percentage(self, swap_fee_percentage: Decimal):
         self.swap_fee_percentage = swap_fee_percentage
-    
+        return swap_fee_percentage
+
     def set_paused(self):
         self.paused = True
 
@@ -48,4 +49,4 @@ class BasePool:
 
     def on_exit_pool(self):
         ...
-    
+
