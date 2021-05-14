@@ -167,7 +167,7 @@ class StableMath:
         else:
             accumulatedTokenSwapFees = 0
 
-        return divDown(mulDown(accumulatedTokenSwapFees, Decimal(protocolSwapFeePercentage)),
+        return divDown(mulDown(accumulatedTokenSwapFees, Decimal(protocolSwapFeePercentage)))
 
     @staticmethod
     @enforce_types

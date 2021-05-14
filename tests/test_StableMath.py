@@ -147,7 +147,6 @@ class TestStableMath(unittest.TestCase):
         result = StableMath.calcBptOutGivenExactTokensIn(amp, balances, amountsIn,bptTotalsupply, swapFee,swapFeePercentage)
         assert isinstance(result, Decimal)
         '''
-        
         '''
 
 
