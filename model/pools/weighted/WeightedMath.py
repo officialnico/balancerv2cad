@@ -2,7 +2,7 @@ from decimal import Decimal
 from model.pools.util import *
 from typing import List
 import sys  # todo delete later
-# from enforce_typing import enforce_types
+from enforce_typing import enforce_types
 
 MIN_WEIGHT = 0.01
 _MAX_WEIGHTED_TOKENS = 100
@@ -75,7 +75,7 @@ class WeightedMath:
         return mulUp(balance_in, ratio)
 
     @staticmethod
-    # @enforce_types
+    @enforce_types
     def calc_bpt_out_given_exact_tokens_in(balances: List[Decimal], normalized_weights: List[Decimal], amounts_in: List[Decimal],
                                            bptTotalSupply: Decimal,
                                            swap_fee: Decimal):
@@ -111,7 +111,7 @@ class WeightedMath:
             return 0
 
     @staticmethod
-    # @enforce_types
+    @enforce_types
     def calc_token_in_given_exact_bpt_out(
         balance: Decimal,
         normalized_weight: Decimal,
