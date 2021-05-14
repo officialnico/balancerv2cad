@@ -13,7 +13,7 @@ class TestBasePool(unittest.TestCase):
 		assert isinstance(result, object)
 
 	def test_get_pool_id(basepool_test):
-		... #TODO
+
 
 	def test_get_total_tokens(basepool_test):
 		a, b = BasePool, BasePool
