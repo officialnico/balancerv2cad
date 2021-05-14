@@ -2,7 +2,9 @@ from model.pools.stable.StableMath import StableMath
 from model.pools.weighted.WeightedMath import WeightedMath
 from model.pools.BalancerPoolToken import BalancerPoolToken
 from model.pools.BasePool import BasePool
+from model.vault.Vault import Vault
 
+from decimal import Decimal
 import pytest
 
 
@@ -20,5 +22,6 @@ def basepool_test() -> None:
 
 @pytest.fixture()
 def balancerpooltoken_test() -> None:
-    yield BalancerPoolToken
-
+    v = Vault()
+    handler = BalancerPoolToken(v, 'test', 'TST', ['bal','btc'],Decimal(0.23), 0)
+    yield handler
