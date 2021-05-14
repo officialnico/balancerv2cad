@@ -5,6 +5,7 @@ from math import ceil, floor
 from model.pools.util import *
 from enforce_typing import enforce_types
 
+getcontext().prec = 18
 
 @dataclass
 class BalancerMathResult:
@@ -58,7 +59,6 @@ class StableMath:
     @enforce_types
     def calcBptInGivenExactTokensOut(amplificationParameter: Decimal, balances: list, amountsOut: list, bptTotalSupply: Decimal, swapFee: Decimal) -> Decimal:
         currentInvariants = StableMath.calculateInvariant(amplificationParameter, balances)
-
         # calculate the sum of all token balances
         sumBalances = Decimal(0)
         for i in range(len(balances)):
@@ -144,7 +144,7 @@ class StableMath:
     @staticmethod
     @enforce_types
 
-    def calcDueTokenProtocolSwapFeeAmount(amplificationParameter: Decimal, balances: List[Decimal], lastInvariant: Decimal, tokenIndex: int, protocolSwapFeePercentage: Decimal):
+    def calcDueTokenProtocolSwapFeeAmount(amplificationParameter: Decimal, balances: List[Decimal], lastInvariant: Decimal, tokenIndex: int, protocolSwapFeePercentage: float):
         # /**************************************************************************************************************
         # // oneTokenSwapFee - polynomial equation to solve                                                            //
         # // af = fee amount to calculate in one token                                                                 //
@@ -167,7 +167,7 @@ class StableMath:
         else:
             accumulatedTokenSwapFees = 0
 
-        return accumulatedTokenSwapFees
+        return divDown(mulDown(accumulatedTokenSwapFees, Decimal(protocolSwapFeePercentage)),
 
     @staticmethod
     @enforce_types
@@ -197,6 +197,7 @@ class StableMath:
         )
 
         balances[tokenIndexOut] = balances[tokenIndexOut]+ tokenAmountOut
+        print(finalBalanceIn)
         return finalBalanceIn - balances[tokenIndexIn] + Decimal(1/1e18)
 
     @staticmethod
@@ -341,9 +342,9 @@ class StableMath:
             prevTokenbalance = tokenBalance
             tokenBalance = divUp((mulUp(tokenBalance,tokenBalance) + c),((tokenBalance*2)+b-invariant))
             if(tokenBalance > prevTokenbalance):
-                if(tokenBalance-prevTokenbalance <= 1):
+                if(tokenBalance-prevTokenbalance <= 1/1e18):
                     break
-            elif(prevTokenbalance-tokenBalance <= 1):
+            elif(prevTokenbalance-tokenBalance <= 1/1e18):
                 break
 
         return tokenBalance
