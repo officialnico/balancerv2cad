@@ -19,6 +19,6 @@ def basepool_test() -> None:
     yield BasePool
 
 @pytest.fixture()
-def balancerpooltoken_test() -> None:
+def balancer_pool_token_test() -> None:
     yield BalancerPoolToken
 
