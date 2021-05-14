@@ -19,7 +19,7 @@ def weightedmath_test() -> None:
 @pytest.fixture()
 def basepool_test() -> None:
     vault = Vault()
-    basepool = BasePool(vault, 'foo', 'FOO', {'btc','eth':200},Decimal(0.2),0,0)
+    basepool = BasePool(vault, 'foo', 'FOO', {'btc':20,'eth':200},Decimal(0.2),0,0)
     yield basepool
 
 @pytest.fixture()
