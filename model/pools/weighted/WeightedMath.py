@@ -239,7 +239,7 @@ class WeightedMath:
 
         base = divUp(previous_invariant, current_invariant)
         exponent = divDown(Decimal(1), normalized_weight)
-        base = max(base, 0.7)
+        base = max(base, Decimal(0.7))
         power = powUp(base, exponent)
         token_accrued_fees = mulDown(balance, (complement(power)))
         return mulDown(token_accrued_fees, protocol_swap_fee_percentage)
