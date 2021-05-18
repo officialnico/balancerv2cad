@@ -5,12 +5,12 @@ from math import ceil, floor
 from model.pools.util import *
 from enforce_typing import enforce_types
 
-getcontext().prec = 18
-
+getcontext().prec = 28
 @dataclass
 class BalancerMathResult:
     result: Decimal
     fee: Decimal
+
 
 class StableMath:
 
@@ -67,7 +67,7 @@ class StableMath:
         tokenBalanceRatiosWithoutFee = [None] * len(balances)
         weightedBalanceRatio = Decimal(0)
 
-        getcontext().prec = 18
+        getcontext().prec = 28
         for i in range(len(balances)):
             currentWeight = divUp(balances[i], sumBalances)
             tokenBalanceRatiosWithoutFee[i] = balances[i] - divUp(amountsOut[i], balances[i])
@@ -185,7 +185,7 @@ class StableMath:
         # // S = sum of final balances but x                                                                           //
         # // P = product of final balances but x                                                                       //
         # **************************************************************************************************************/
-
+        getcontext().prec = 28
         invariant = StableMath.calculateInvariant(amplificationParameter, balances)
         balances[tokenIndexOut] = balances[tokenIndexOut] - tokenAmountOut
 
@@ -194,11 +194,11 @@ class StableMath:
             balances,
             invariant,
             tokenIndexIn
-        )
+        )  
 
         balances[tokenIndexOut] = balances[tokenIndexOut]+ tokenAmountOut
-        print(finalBalanceIn)
-        return finalBalanceIn - balances[tokenIndexIn] + Decimal(1/1e18)
+        result = finalBalanceIn - balances[tokenIndexIn] + Decimal(1/1e18)
+        return result
 
     @staticmethod
     @enforce_types
@@ -216,16 +216,22 @@ class StableMath:
         # // S = sum of final balances but y                                                                           //
         # // P = product of final balances but y                                                                       //
         # **************************************************************************************************************/
-
+        print("Context", "OUTGIVENIN" )
         invariant = StableMath.calculateInvariant(amplificationParameter, balances)
+        print("Invariant", invariant)
         balances[tokenIndexIn] = balances[tokenIndexIn] + tokenAmountIn
-
         finalBalanceOut = StableMath.getTokenBalanceGivenInvariantAndAllOtherBalances(amplificationParameter, balances, invariant, tokenIndexOut)
+        
+        print("FinalBalance Out", finalBalanceOut)
+        
         balances[tokenIndexIn] = balances[tokenIndexIn] - tokenAmountIn
 
-        return balances[tokenIndexOut] - finalBalanceOut  # TODO took out .sub(1) at the end of this statement
+        result = balances [tokenIndexOut] - finalBalanceOut  # TODO took out .sub(1) at the end of this statement
 
-
+        print(result)
+        print("END-CONTEXT", "OUTGIVENIN" )
+        
+        return result
         # Flow of calculations:
         #  amountBPTOut -> newInvariant -> (amountInProportional, amountInAfterFee) ->
         #  amountInPercentageExcess -> amountIn
@@ -318,11 +324,9 @@ class StableMath:
     @enforce_types
 
     def getTokenBalanceGivenInvariantAndAllOtherBalances(amplificationParameter: Decimal, balances: List[Decimal], invariant: Decimal, tokenIndex: int) -> Decimal:
-        getcontext().prec = 18
-
+        getcontext().prec = 28
         ampTimesTotal = amplificationParameter * len(balances)
         bal_sum = Decimal(sum(balances))
-
         P_D = len(balances) * balances[0]
         for i in range(1, len(balances)):
             P_D = (P_D*balances[i]*len(balances))/invariant
@@ -331,21 +335,22 @@ class StableMath:
 
         c = invariant*invariant/ampTimesTotal
         c = divUp(mulUp(c, balances[tokenIndex]), P_D)
-
         print(type(bal_sum),type(invariant),type(ampTimesTotal))
         b = bal_sum + divDown(invariant, ampTimesTotal)
-
         prevTokenbalance = 0
         tokenBalance = divUp((invariant*invariant+c), (invariant+b))
-
         for i in range(255):
             prevTokenbalance = tokenBalance
-            tokenBalance = divUp((mulUp(tokenBalance,tokenBalance) + c),((tokenBalance*2)+b-invariant))
+            tokenBalance = divUp((mulUp(tokenBalance,tokenBalance) + c),((tokenBalance*Decimal(2))+b-invariant))
+            print(i,tokenBalance)
             if(tokenBalance > prevTokenbalance):
                 if(tokenBalance-prevTokenbalance <= 1/1e18):
                     break
             elif(prevTokenbalance-tokenBalance <= 1/1e18):
                 break
+        
+        
+
 
         return tokenBalance
 
