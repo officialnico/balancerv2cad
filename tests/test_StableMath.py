@@ -3,13 +3,8 @@ from model.pools.stable.StableMath import StableMath
 from decimal import *
 import unittest
 
-getcontext().prec = 18
-# self.tester('calculateInvariant', self.calculateInvariant(20,[23,23]), 46)
-# self.tester('calc_bpt_in_given_exact_tokens_out', self.calc_bpt_in_given_exact_tokens_out(2,[222,3112,311],[11,22,310],2,4), 2)
-# # assert self.calc_bpt_out_given_exact_tokens_in(22,[2,3,4,20],[2,1,2,1000],3,4), 56
-# # assert self.calcInGivenOut(2,[222,3112,311],1,1,4), 0.000002756210410895
-# self.tester('getTokenBalanceGivenInvariantAndAllOtherBalances', self.getTokenBalanceGivenInvariantAndAllOtherBalances(22, [2,3,4,20], 1, 2), 0.002573235526125192)
-MAX_RELATIVE_ERROR = Decimal(0.001)
+getcontext().prec = 21
+MAX_RELATIVE_ERROR = Decimal(1e-17)
 
 def expectEqualWithError(result: Decimal, expected: Decimal):
     if result <= expected + MAX_RELATIVE_ERROR and result >= expected - MAX_RELATIVE_ERROR:
@@ -88,7 +83,8 @@ class TestStableMath(unittest.TestCase):
         tokenIndexOut = 1
         tokenAmountOut = Decimal(1)
         result = StableMath.calcInGivenOut(amp, balances, tokenIndexIn, tokenIndexOut, tokenAmountOut)
-        assert expectEqualWithError(result, Decimal(1.002381999332076302))
+        expected = Decimal(1002381999332076302)/Decimal(1e18)
+        assert expectEqualWithError(result, expected)
         
 
     def test_calcOutGivenIn(stablemath_test):
@@ -109,7 +105,8 @@ class TestStableMath(unittest.TestCase):
         tokenIndexOut = 1
         tokenAmountIn = Decimal(1)
         result = StableMath.calcOutGivenIn(amp, balances, tokenIndexIn, tokenIndexOut, tokenAmountIn)
-        assert expectEqualWithError(result, Decimal(0.997840816806192585))
+        expected = Decimal(997840816806192585)/Decimal(1e18)
+        assert expectEqualWithError(result, expected)
         '''
         Tests out given in for three tokens
         '''
@@ -119,7 +116,8 @@ class TestStableMath(unittest.TestCase):
         tokenIndexOut = 1
         tokenAmountIn = Decimal(1)
         result = StableMath.calcOutGivenIn(amp, balances, tokenIndexIn, tokenIndexOut, tokenAmountIn)
-        assert expectEqualWithError(result, Decimal(0.991747876655227989))
+        expected = Decimal(991747876655227989)/Decimal(1e18)
+        assert expectEqualWithError(result, expected)
     # def test_calcDueTokenProtoclSwapFeeAmount(stablemath_test):
     #     '''
     #     Tests if output is instance of Decimal

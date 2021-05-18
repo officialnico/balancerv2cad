@@ -2,30 +2,33 @@ from decimal import *
 
 
 def mulUp(a: Decimal, b: Decimal) -> Decimal:
-    getcontext().prec = 18
+    getcontext().prec = 28
     getcontext().rounding = ROUND_UP
     return a*b
 
 
 def divUp(a: Decimal, b: Decimal) -> Decimal:
     if a * b == 0:
+        
         return Decimal(0)
     else:
-        getcontext().prec = 18
+        getcontext().prec = 28
         getcontext().rounding = ROUND_UP
         return a/b
 
 
 def mulDown(a: Decimal, b: Decimal)-> Decimal:
-    getcontext().prec = 18
+    getcontext().prec = 28
     getcontext().rounding = ROUND_DOWN
     return a * b
 
 
 def divDown(a: Decimal, b: Decimal)-> Decimal:
-    getcontext().prec = 18
+    getcontext().prec = 28
     getcontext().rounding = ROUND_DOWN
-    return a/b
+    result =  a/b
+    print("here", result)
+    return result
 
 
 def complement(a: Decimal) -> Decimal:
@@ -34,12 +37,12 @@ def complement(a: Decimal) -> Decimal:
 
 
 def powUp(a: Decimal,b:Decimal) -> Decimal:
-    getcontext().prec = 18
+    getcontext().prec = 28
     getcontext().rounding = ROUND_UP
     return a**b
 
 
 def powDown(a: Decimal,b: Decimal)-> Decimal:
-    getcontext().prec = 18
+    getcontext().prec = 28
     getcontext().rounding = ROUND_DOWN
     return a**b
