@@ -2,8 +2,8 @@ from decimal import *
 from model.pools.weighted.WeightedMath import WeightedMath
 
 
-getcontext().prec = 18
-MAX_RELATIVE_ERROR = Decimal(0.001)
+getcontext().prec = 28
+MAX_RELATIVE_ERROR = Decimal(1e-17)
 
 def expectEqualWithError(result: Decimal, expected: Decimal):
     if result <= expected + MAX_RELATIVE_ERROR and result >= expected - MAX_RELATIVE_ERROR:
@@ -51,7 +51,7 @@ class TestWeightedMath:
 		assert isinstance(result, Decimal)
 
 		#Test out given in 
-		expected = Decimal(16.02931431298673722)
+		expected = Decimal(1602931431298673722)/Decimal(1e17)
 		assert expectEqualWithError(result, expected)
 
 	def test_in_given_out_single_swap(weightedmath_test):
@@ -64,11 +64,12 @@ class TestWeightedMath:
 		result = WeightedMath.calc_in_given_out(balance_in, weight_in, balance_out, weight_out, amount_out)
 		assert isinstance(result, Decimal)
 		
-		expected = Decimal(13.88456294146839515)
+		expected = Decimal(1388456294146839515)/Decimal(1e17)
 		assert expectEqualWithError(result, expected)
 	
 	def test_out_given_in_extreme_amounts(weightedmath_test):
-		#Test instance of Decimal
+		# Test instance of Decimal
+
 		token_balance_in = Decimal(100)
 		token_weight_in = Decimal(50)
 		token_balance_out = Decimal(100)
@@ -78,8 +79,10 @@ class TestWeightedMath:
 
 		assert isinstance(result, Decimal)
 
-		#Test out given in 
-		expected = Decimal(12500000/1e18)
+		# Test out given in 
+		# min amount in
+
+		expected = Decimal(12500000)/Decimal(1e18)
 		assert expectEqualWithError(result, expected)
 	def test_in_given_out_extreme_amounts(weightedmath_test):
 		#Test instance of Decimal
@@ -92,8 +95,9 @@ class TestWeightedMath:
 
 		assert isinstance(result, Decimal)
 
-		#Test out given in 
-		expected = Decimal(8000000/1e18)
+		# Test In given in 
+		# min amount out
+		expected = Decimal(8000000)/Decimal(1e18)
 		assert expectEqualWithError(result, expected)
 
 	def test_out_given_in_extreme_weights(weightedmath_test):
@@ -109,7 +113,7 @@ class TestWeightedMath:
 		assert isinstance(result, Decimal)
 
 		#Test out given in 
-		expected = Decimal(99.99999883374836452)
+		expected = Decimal(9999999883374836452)/Decimal(1e17)
 		assert expectEqualWithError(result, expected)
 
 	def test_in_given_out_extreme_weights(weightedmath_test):

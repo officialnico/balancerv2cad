@@ -3,8 +3,8 @@ from model.pools.stable.StableMath import StableMath
 from decimal import *
 import unittest
 
-getcontext().prec = 18
-MAX_RELATIVE_ERROR = Decimal(0.001)
+getcontext().prec = 21
+MAX_RELATIVE_ERROR = Decimal(1e-17)
 
 def expectEqualWithError(result: Decimal, expected: Decimal):
     if result <= expected + MAX_RELATIVE_ERROR and result >= expected - MAX_RELATIVE_ERROR:
@@ -83,7 +83,8 @@ class TestStableMath(unittest.TestCase):
         tokenIndexOut = 1
         tokenAmountOut = Decimal(1)
         result = StableMath.calcInGivenOut(amp, balances, tokenIndexIn, tokenIndexOut, tokenAmountOut)
-        assert expectEqualWithError(result, Decimal(1.002381999332076302))
+        expected = Decimal(1002381999332076302)/Decimal(1e18)
+        assert expectEqualWithError(result, expected)
         
 
     def test_calcOutGivenIn(stablemath_test):
@@ -104,7 +105,8 @@ class TestStableMath(unittest.TestCase):
         tokenIndexOut = 1
         tokenAmountIn = Decimal(1)
         result = StableMath.calcOutGivenIn(amp, balances, tokenIndexIn, tokenIndexOut, tokenAmountIn)
-        assert expectEqualWithError(result, Decimal(0.997840816806192585))
+        expected = Decimal(997840816806192585)/Decimal(1e18)
+        assert expectEqualWithError(result, expected)
         '''
         Tests out given in for three tokens
         '''
@@ -114,7 +116,8 @@ class TestStableMath(unittest.TestCase):
         tokenIndexOut = 1
         tokenAmountIn = Decimal(1)
         result = StableMath.calcOutGivenIn(amp, balances, tokenIndexIn, tokenIndexOut, tokenAmountIn)
-        assert expectEqualWithError(result, Decimal(0.991747876655227989))
+        expected = Decimal(991747876655227989)/Decimal(1e18)
+        assert expectEqualWithError(result, expected)
     # def test_calcDueTokenProtoclSwapFeeAmount(stablemath_test):
     #     '''
     #     Tests if output is instance of Decimal

@@ -72,8 +72,8 @@ class WeightedMath:
         exponent = divUp(weight_out, weight_in)
         power = powUp(base, exponent)
         ratio = power - Decimal(1)
-        return mulUp(balance_in, ratio)
-
+        result = mulUp(balance_in, ratio)
+        return result
     @staticmethod
     @enforce_types
     def calc_bpt_out_given_exact_tokens_in(balances: List[Decimal], normalized_weights: List[Decimal], amounts_in: List[Decimal],
