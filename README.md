@@ -2,9 +2,9 @@
 
 # Balancer V2 Model
 
-# `join_pool(balances)`
+## `join_pool(balances)`
 
-# `exit_pool(balances)`
+## `exit_pool(balances)`
 
-# `swap(token_in, token_out, amount, given_in=True)`
+## `swap(token_in, token_out, amount, given_in=True)`
 
