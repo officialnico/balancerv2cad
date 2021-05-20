@@ -2,31 +2,16 @@
 
 # Balancer V2 Model
 
-### Contract Debugging:
+## join_pool(balances)
+this is the balances to add
+#### Defaults to stablepool
+`join_pool({'BTC':12.51,'ETH':181.58})`
 
+#### Add weights
+`join_pool({'BTC':12.51,'ETH':181.58})`
 
-go into the root of the dir after cloning
+## exit_pool(balances)
+`exit_pool({'BTC':1,'ETH':10})
 
-- have node installed (check with `npm -v`)
--  have yarn installed (check with `yarn -v`) if not then insall with `npm install -g yarn`
+## swap(token_in, token_out, amount, given_in=True)
 
-```
-git clone https://github.com/officialnico/balancer-core-v2.git
-cp package.json balancer-core-v2
-cd balancer-core-v2
-yarn
-yarn test
-```
-
-to run tests:
-from the balancerV2_Model/balancer-core-v2 directory
-
-`yarn test`
-
-to debug the results go to the contracts and find the contract you are looking for and put this after all the imports
-
-`import "hardhat/console.sol";`
-
-to print the value of a variable you can use `console.log(...);` under it. you may have to change the 'pure' after the functions parameters to a 'view', you will also have to do it for the Mock contract, and you might even have to for any functions called in the way.
-
-if you feel lost run `yarn test` and go to the error where 'pure' is showing up (if this is the error), and change it to a view
