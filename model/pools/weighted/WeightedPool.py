@@ -20,7 +20,7 @@ class WeightedPool(WeightedMath):
         self._weights = {}
 
 
-    def weighted_swap(self, token_in: str, token_out: str, amount: Decimal, given_in: bool = True):
+    def swap(self, token_in: str, token_out: str, amount: Decimal, given_in: bool = True):
         assert len(self._weights) == len(self._balances)
         if(isinstance(amount,int) or isinstance(amount,float)):
             amount = Decimal(amount)
@@ -63,10 +63,10 @@ class WeightedPool(WeightedMath):
         self._balances = bals
          
     def _mint_pool_share(self, amount: Decimal):
-        self._pool_token_supply += 1
+        self._pool_token_supply += amount
         
     def _burn_pool_share(self, amount: Decimal):
-        self._pool_token_supply -= 1
+        self._pool_token_supply -= amount
         
     def set_swap_fee(self, amount: Decimal):
         self._swap_fee = amount
