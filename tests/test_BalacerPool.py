@@ -13,4 +13,4 @@ class TestBalancerPool(unittest.TestCase):
         assert(bp.join_pool({'btc':30}), bp._balances)
     
 
-
+    

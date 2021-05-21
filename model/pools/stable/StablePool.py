@@ -17,6 +17,7 @@ class StablePool(StableMath):
         self._pool_token_supply = initial_pool_supply
         self.factory_fees = Decimal('0')
         self._balances = {}
+        self._amplification_parameter = AMPLIFICATION_PARAMETER
 
     def swap(self, token_in: str, token_out: str, amount: Decimal, given_in: bool = True):
         if(isinstance(amount,int) or isinstance(amount,float)):
@@ -34,10 +35,10 @@ class StablePool(StableMath):
         self._balances[token_out] -= amount_out
         self._balances[token_in] += swap_amount
         return amount_out
-
+    
+    
     def join_pool(self, balances: dict):
-        if len(balances) != 2:
-            raise Exception("50/50 2-token pool only")
+        
         for key in balances:
             if key in self._balances:
                 self._balances[key] += balances[key]
@@ -45,7 +46,7 @@ class StablePool(StableMath):
                 self._balances.update({key:balances[key]})
     
     def get_amplification_parameter(self):
-        return self.AMPLIFICATION_PARAMETER
+        return self._amplification_parameter
 
     def _get_total_tokens(self):
         return len(self._balancesa)
