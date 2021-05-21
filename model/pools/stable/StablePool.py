@@ -2,69 +2,65 @@ from decimal import *
 from typing import List
 from model.pools.stable.StableMath import StableMath
 
-getcontext().prec = 18
+BONE = Decimal('1')
+MIN_FEE = Decimal('0.000001')
+MAX_FEE = Decimal('0.1')
+INIT_POOL_SUPPLY = BONE * Decimal('100')
+MIN_BOUND_TOKENS = 2
+MAX_BOUND_TOKENS = 8
+AMPLIFICATION_PARAMETER = Decimal('200')
+
 class StablePool(StableMath):
 
-    def __init__(self, vault: object, name: str, symbol: str, tokens: list, amplification_parameter: Decimal, swap_fee_percentage: Decimal, owner_id: int):
-        self.vault = vault
-        self.name = name
-        self.symbol = symbol
-        self.tokens = sorted(tokens)
-        self._amplification_parameter = amplification_parameter
-        self.swap_fee_percentage = swap_fee_percentage
-        self.owner_id = owner_id
-        self.pool_id = None #vault.registerPool(specialization)
-        self.paused = False
+    def __init__(self, initial_pool_supply: Decimal = INIT_POOL_SUPPLY):
+        self._swap_fee = MIN_FEE
+        self._pool_token_supply = initial_pool_supply
+        self.factory_fees = Decimal('0')
+        self._balances = {}
+
+    def swap(self, token_in: str, token_out: str, amount: Decimal, given_in: bool = True):
+        if(isinstance(amount,int) or isinstance(amount,float)):
+            amount = Decimal(amount)
+        elif(not isinstance(amount, Decimal)):
+            raise Exception("INCORRECT_TYPE")
+        factory_fee = amount*self._swap_fee
+        swap_amount = amount - factory_fee
+        self.factory_fees += factory_fee
+        balances = [self._balances[token_in], self._balances[token_out]]
+        
+        if(given_in): amount_out = StableMath.calcOutGivenIn(AMPLIFICATION_PARAMETER, balances, 0, 1, swap_amount)
+        else: amount_out = StableMath.calcInGivenOut(AMPLIFICATION_PARAMETER, balances, 0, 1, swap_amount)
+        
+        self._balances[token_out] -= amount_out
+        self._balances[token_in] += swap_amount
+        return amount_out
+
+    def join_pool(self, balances: dict):
+        if len(balances) != 2:
+            raise Exception("50/50 2-token pool only")
+        for key in balances:
+            if key in self._balances:
+                self._balances[key] += balances[key]
+            else:
+                self._balances.update({key:balances[key]})
     
-    def _invariant_after_join(self, balances: List[Decimal]):
-        ...
-
-    # Base Pool Handlers
-    def on_swap_given_in(self, balances: List[Decimal], index_in: int, index_out: int):
-        amp = self.get_amplification_parameter()
-        amount_out = StablePool.calcOutGivenIn(amp,balances, index_in, index_out)
-        return amount_out
-
-    def on_swap_given_out(self, balances: List[Decimal], index_in: int, index_out: int):
-        amp = self.get_amplification_parameter()
-        amount_out = StablePool.calcOutGivenOut(amp,balances,index_in, index_out)
-        return amount_out
-
     def get_amplification_parameter(self):
-        return self._amplification_parameter
-    def get_vault(self):
-        return self.vault
-    def get_pool_id(self):
-        return self.pool_id
-    def get_owner_id(self):
-        return self.owner_id
+        return self.AMPLIFICATION_PARAMETER
+
     def _get_total_tokens(self):
-        return len(self.tokens)
-    def get_swap_fee_percentage(self):
-        return self.swap_fee_percentage
-    def set_paused(self):
-        self.paused = True
-    def on_join_pool(self, balances: List[Decimal], protocl_swap_fee_percentage: Decimal):
-        due_protocol_fee_amounts = self._get_due_protocol_fees_amounts(balances,  )
+        return len(self._balancesa)
 
+    def exit_pool(self, balances: dict):
+        bals = self._balances - balances
+        for key in bals:
+            if(bals[key]<0): bals[key] = 0
+        self._balances = bals
+    def set_swap_fee(self, amount: Decimal):
+        self._swap_fee = amount
 
-    def on_exit_pool(self):
-        NotImplementedError
-    def joinExactTokensInForBPTOut(self ):
-        NotImplementedError
-    
-
-    def _get_due_protocol_fees_amounts(self, balances: List[Decimal], previous_invariant: Decimal, protocol_swap_fee_percentage: Decimal)-> List[Decimal]: 
-        due_protocol_amounts = [0]*self._get_total_tokens()
-        if protocol_swap_fee_percentage == Decimal(0):
-            return due_protocol_amounts
-
-        chosen_token_index = 0
-        max_balance = balances[0]
-        for i in range(1, self._get_total_tokens()):
-            current_balance = balances[i]
-            if current_balance > max_balance:
-                chosen_token_index = i
-                max_balance = current_balance
-        due_protocol_amounts[chosen_token_index] = StablePool.calcDueTokenProtocolSwapFeeAmount(self._amplification_parameter, balances,previous_invariant, chosen_token_index, protocol_swap_fee_percentage)
-        return due_protocol_amounts
+    def _mint_pool_share(self, amount: Decimal):
+        self._pool_token_supply += amount
+        
+    def _burn_pool_share(self, amount: Decimal):
+        self._pool_token_supply -= amount
+        
