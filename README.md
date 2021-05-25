@@ -2,16 +2,16 @@
 
 # Balancer V2 Model
 
-## join_pool(balances)
-this is the balances to add
-#### Defaults to stablepool
-`join_pool({'BTC':12.51,'ETH':181.58})`
+The BalancerV2 model is a python implementation of the balancerv2 protocol funded by Balancer and the Token Engineering community. In collaboration with EthicHub. 
+We hope to build a resiliant, easy, and simple to use access to balancer pools for simulations, and build a brighter tomorrow for Token Engineers. Feel free to play and use this model for youw own simulations and grow token engineering everywhere.
 
-#### Add weights
-`join_pool({'BTC':12.51,'ETH':181.58})`
+- Copy BalancerV2 Pools from OnChain, being able to pull weights from chain based on the symbols provided, this will reduce friction for new users.
+- Ease access into BalancerV2 pools for anyone wanting to make a trade and see the ending result of the pool
+- Provide an interface for easy swapping, adding liquidity, and removing it. This can be done with ipython or Jupyter
+- Develop rigorous testing for math functions to assure decimals are flowing exactly as EVM
+- Model ecosystem with agents using these balancer pools as an interactive objects.
 
-## exit_pool(balances)
-`exit_pool({'BTC':1,'ETH':10})
+All research is open source and transparent. For more information please visit the [Balancer Simulations Documentation](https://24nico.gitbook.io/balancerv2-py-twin/).
 
-## swap(token_in, token_out, amount, given_in=True)
+
 
