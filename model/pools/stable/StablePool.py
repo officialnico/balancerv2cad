@@ -1,14 +1,8 @@
 from decimal import *
 from typing import List
 from model.pools.stable.StableMath import StableMath
+from model.pools.BalancerConstants import *
 
-BONE = Decimal('1')
-MIN_FEE = Decimal('0.000001')
-MAX_FEE = Decimal('0.1')
-INIT_POOL_SUPPLY = BONE * Decimal('100')
-MIN_BOUND_TOKENS = 2
-MAX_BOUND_TOKENS = 8
-AMPLIFICATION_PARAMETER = Decimal('200')
 
 class StablePool(StableMath):
 
