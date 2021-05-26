@@ -1,15 +1,9 @@
 from decimal import Decimal
 from model.pools.util import *
+from model.pools.BalancerConstants import *
 from typing import List
 import sys  # todo delete later
 
-
-MIN_WEIGHT = 0.01
-_MAX_WEIGHTED_TOKENS = 100
-_MAX_IN_RATIO = 0.3
-_MAX_OUT_RATIO = 0.3
-_MAX_INVARIANT_RATIO = 3
-_MIN_INVARIANT_RATIO = 0.7
 
 class WeightedMath:
 

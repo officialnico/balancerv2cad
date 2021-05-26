@@ -1,14 +1,8 @@
 from decimal import Decimal
 from model.pools.stable.StableMath import StableMath
 from model.pools.weighted.WeightedMath import WeightedMath
+from model.pools.BalancerConstants import *
 
-BONE = Decimal('1')
-MIN_FEE = Decimal('0.000001')
-MAX_FEE = Decimal('0.1')
-INIT_POOL_SUPPLY = BONE * Decimal('100')
-MIN_BOUND_TOKENS = 2
-MAX_BOUND_TOKENS = 8
-AMPLIFICATION_PARAMETER = Decimal('200')
 
 class BalancerPool:
 
@@ -30,10 +24,7 @@ class BalancerPool:
         swap_amount = amount - factory_fee
         self.factory_fees += factory_fee
         balances = [self._balances[token_in], self._balances[token_out]]
-        
-        if(given_in): amount_out = StableMath.calcOutGivenIn(AMPLIFICATION_PARAMETER, balances, 0, 1, swap_amount)
-        else: amount_out = StableMath.calcInGivenOut(AMPLIFICATION_PARAMETER, balances, 0, 1, swap_amount)
-        
+        amount_out = StableMath.calcOutGivenIn(AMPLIFICATION_PARAMETER, balances, 0, 1, swap_amount)
         self._balances[token_out] -= amount_out
         self._balances[token_in] += swap_amount
         return amount_out
@@ -50,9 +41,8 @@ class BalancerPool:
         balances = [self._balances[token_in], self._balances[token_out]]
         weights = [self._weights[token_in], self._weights[token_out]]
         
-        if(given_in): amount_out = WeightedMath.calc_out_given_in(balances[0], weights[0], balances[1], weights[1], amount)
-        else: WeightedMath.calc_in_given_out(balances[0], weights[0], balances[1], weights[1], amount)
-            
+        amount_out = WeightedMath.calc_out_given_in(balances[0], weights[0], balances[1], weights[1], amount)
+        
         self._balances[token_out] -= amount_out
         self._balances[token_in] += swap_amount
         return amount_out
