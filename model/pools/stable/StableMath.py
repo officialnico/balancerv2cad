@@ -15,7 +15,7 @@ class StableMath:
 
 # -------------------------------------
     @staticmethod
-    def calculateInvariant(amplificationParameter: Decimal, balances: dict) -> Decimal:
+    def calculate_invariant(amplificationParameter: Decimal, balances: dict) -> Decimal:
 
         # /**********************************************************************************************
         # // invariant                                                                                 //
@@ -56,8 +56,8 @@ class StableMath:
     #  amountOutPercentageExcess -> amountOutBeforeFee -> newInvariant -> amountBPTIn
     @staticmethod
 
-    def calcBptInGivenExactTokensOut(amplificationParameter: Decimal, balances: list, amountsOut: list, bptTotalSupply: Decimal, swapFee: Decimal) -> Decimal:
-        currentInvariants = StableMath.calculateInvariant(amplificationParameter, balances)
+    def calc_bpt_in_given_exact_tokens_out(amplificationParameter: Decimal, balances: list, amountsOut: list, bptTotalSupply: Decimal, swapFee: Decimal) -> Decimal:
+        currentInvariants = StableMath.calculate_invariant(amplificationParameter, balances)
         # calculate the sum of all token balances
         sumBalances = Decimal(0)
         for i in range(len(balances)):
@@ -85,7 +85,7 @@ class StableMath:
             newBalances.append(balances[i] - amountOutBeforeFee)
 
         # get the new invariant, taking Decimalo account swap fees
-        newInvariant = StableMath.calculateInvariant(amplificationParameter, newBalances)
+        newInvariant = StableMath.calculate_invariant(amplificationParameter, newBalances)
 
         # return amountBPTIn
         return bptTotalSupply * Decimal(divUp(newInvariant, complement(currentInvariants)))
@@ -106,9 +106,9 @@ class StableMath:
     @staticmethod
     
 
-    def calcBptOutGivenExactTokensIn(amplificationParameter: Decimal, balances: dict, amountsIn: dict, bptTotalSupply: Decimal, swapFee: Decimal, swapFeePercentage: Decimal) -> Decimal:
+    def calc_bpt_out_given_exact_tokens_in(amplificationParameter: Decimal, balances: dict, amountsIn: dict, bptTotalSupply: Decimal, swapFee: Decimal, swapFeePercentage: Decimal) -> Decimal:
         # get current invariant
-        currentInvariant = StableMath.calculateInvariant(amplificationParameter, balances)
+        currentInvariant = StableMath.calculate_invariant(amplificationParameter, balances)
 
         sumBalances = Decimal(0)
         for i in range(len(balances)):
@@ -136,14 +136,14 @@ class StableMath:
 
         # get new invariant, taking swap fees Decimalo account
 
-        newInvariant = Decimal(StableMath.calculateInvariant(amplificationParameter, newBalances))
+        newInvariant = Decimal(StableMath.calculate_invariant(amplificationParameter, newBalances))
         # return amountBPTOut
         return Decimal(mulDown(bptTotalSupply, divDown(newInvariant, currentInvariant))) # TODO omitted subtracting ONE from current_invariant
 
     @staticmethod
     
 
-    def calcDueTokenProtocolSwapFeeAmount(amplificationParameter: Decimal, balances: dict, lastInvariant: Decimal, tokenIndex: int, protocolSwapFeePercentage: float):
+    def calc_due_token_protocol_swap_fee_amount(amplificationParameter: Decimal, balances: dict, lastInvariant: Decimal, tokenIndex: int, protocolSwapFeePercentage: float):
         # /**************************************************************************************************************
         # // oneTokenSwapFee - polynomial equation to solve                                                            //
         # // af = fee amount to calculate in one token                                                                 //
@@ -171,7 +171,7 @@ class StableMath:
     @staticmethod
     
 
-    def calcInGivenOut(amplificationParameter: Decimal, balances: dict, tokenIndexIn: str, tokenIndexOut: str, tokenAmountOut: Decimal):
+    def calc_in_given_out(amplificationParameter: Decimal, balances: dict, tokenIndexIn: str, tokenIndexOut: str, tokenAmountOut: Decimal):
 
         # /**************************************************************************************************************
         # // inGivenOut token x for y - polynomial equation to solve                                                   //
@@ -185,10 +185,10 @@ class StableMath:
         # // P = product of final balances but x                                                                       //
         # **************************************************************************************************************/
         getcontext().prec = 28
-        invariant = StableMath.calculateInvariant(amplificationParameter, balances)
+        invariant = StableMath.calculate_invariant(amplificationParameter, balances)
         balances[tokenIndexOut] = balances[tokenIndexOut] - tokenAmountOut
 
-        finalBalanceIn = StableMath.getTokenBalanceGivenInvariantAndAllOtherBalances(
+        finalBalanceIn = StableMath.get_token_balance_given_invariant_and_all_other_balances(
             amplificationParameter,
             balances,
             invariant,
@@ -202,7 +202,7 @@ class StableMath:
     @staticmethod
     
 
-    def calcOutGivenIn(amplificationParameter: Decimal, balances: dict, tokenIndexIn: str, tokenIndexOut: str, tokenAmountIn: Decimal):
+    def calc_out_given_in(amplificationParameter: Decimal, balances: dict, tokenIndexIn: str, tokenIndexOut: str, tokenAmountIn: Decimal):
 
         # /**************************************************************************************************************
         # // outGivenIn token x for y - polynomial equation to solve                                                   //
@@ -215,21 +215,12 @@ class StableMath:
         # // S = sum of final balances but y                                                                           //
         # // P = product of final balances but y                                                                       //
         # **************************************************************************************************************/
-        print("Context", "OUTGIVENIN" )
-        invariant = StableMath.calculateInvariant(amplificationParameter, balances)
-        print("Invariant", invariant)
+        invariant = StableMath.calculate_invariant(amplificationParameter, balances)
         balances[tokenIndexIn] = balances[tokenIndexIn] + tokenAmountIn
-        finalBalanceOut = StableMath.getTokenBalanceGivenInvariantAndAllOtherBalances(amplificationParameter, balances, invariant, tokenIndexOut)
-        
-        print("FinalBalance Out", finalBalanceOut)
-        
+        finalBalanceOut = StableMath.get_token_balance_given_invariant_and_all_other_balances(amplificationParameter, balances, invariant, tokenIndexOut)
         balances[tokenIndexIn] = balances[tokenIndexIn] - tokenAmountIn
-
         result = balances [tokenIndexOut] - finalBalanceOut  # TODO took out .sub(1) at the end of this statement
 
-        print(result)
-        print("END-CONTEXT", "OUTGIVENIN" )
-        
         return result
         # Flow of calculations:
         #  amountBPTOut -> newInvariant -> (amountInProportional, amountInAfterFee) ->
@@ -238,11 +229,11 @@ class StableMath:
     @staticmethod
     
 
-    def calcTokenInGivenExactBptOut(amplificationParameter: Decimal, balances: dict, tokenIndex: int, bptAmountOut: Decimal, bptTotalSupply: Decimal, swapFeePercentage: Decimal):
+    def calc_token_in_given_exact_bpt_out(amplificationParameter: Decimal, balances: dict, tokenIndex: int, bptAmountOut: Decimal, bptTotalSupply: Decimal, swapFeePercentage: Decimal):
         # Token in so we round up overall
 
         #Get the current invariant
-        currentInvariant = Decimal(StableMath.calculateInvariant(amplificationParameter, balances))
+        currentInvariant = Decimal(StableMath.calculate_invariant(amplificationParameter, balances))
 
         # Calculate new invariant
         newInvariant = divUp((bptTotalSupply + bptAmountOut), mulUp(bptTotalSupply, currentInvariant))
@@ -254,7 +245,7 @@ class StableMath:
             sumBalances += i
 
         # get amountInAfterFee
-        newBalanceTokenIndex = StableMath.getTokenBalanceGivenInvariantAndAllOtherBalances(amplificationParameter, balances, newInvariant, tokenIndex)
+        newBalanceTokenIndex = StableMath.get_token_balance_given_invariant_and_all_other_balances(amplificationParameter, balances, newInvariant, tokenIndex)
         amountInAfterFee = newBalanceTokenIndex - balances[tokenIndex]
 
         # Get tokenBalancePercentageExcess
@@ -267,7 +258,7 @@ class StableMath:
     @staticmethod
     
 
-    def calcTokensOutGivenExactBptIn(balances: dict, bptAmountIn: Decimal, bptTotalSupply: Decimal) -> dict:
+    def calc_tokens_out_given_exact_bpt_in(balances: dict, bptAmountIn: Decimal, bptTotalSupply: Decimal) -> dict:
 
         # /**********************************************************************************************
         # // exactBPTInForTokensOut                                                                    //
@@ -293,9 +284,9 @@ class StableMath:
     @staticmethod
     
 
-    def calcTokenOutGivenExactBptIn(amplificationParameter, balances: dict, tokenIndex: int, bptAmountIn: Decimal, bptTotalSupply: Decimal, swapFeePercentage: Decimal):
+    def calc_token_out_given_exact_bpt_in(amplificationParameter, balances: dict, tokenIndex: int, bptAmountIn: Decimal, bptTotalSupply: Decimal, swapFeePercentage: Decimal):
         # Get current invariant
-        currentInvariant = StableMath.calculateInvariant(amplificationParameter, balances)
+        currentInvariant = StableMath.calculate_invariant(amplificationParameter, balances)
         # calculate the new invariant
         newInvariant = bptTotalSupply - divUp(bptAmountIn, mulUp(bptTotalSupply, currentInvariant))
 
@@ -306,7 +297,7 @@ class StableMath:
             sumBalances += i
 
         # get amountOutBeforeFee
-        newBalanceTokenIndex = StableMath.getTokenBalanceGivenInvariantAndAllOtherBalances(amplificationParameter, balances, newInvariant, tokenIndex)
+        newBalanceTokenIndex = StableMath.get_token_balance_given_invariant_and_all_other_balances(amplificationParameter, balances, newInvariant, tokenIndex)
         amountOutBeforeFee = balances[tokenIndex] - newBalanceTokenIndex
 
         # calculate tokenBalancePercentageExcess
@@ -322,7 +313,7 @@ class StableMath:
     @staticmethod
     
 
-    def getTokenBalanceGivenInvariantAndAllOtherBalances(amplificationParameter: Decimal, balances: List[Decimal], invariant: Decimal, tokenIndex: int) -> Decimal:
+    def get_token_balance_given_invariant_and_all_other_balances(amplificationParameter: Decimal, balances: List[Decimal], invariant: Decimal, tokenIndex: int) -> Decimal:
         getcontext().prec = 28
         ampTimesTotal = amplificationParameter * len(balances)
         bal_sum = Decimal(sum(balances))
