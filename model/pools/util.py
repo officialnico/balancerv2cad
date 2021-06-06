@@ -27,7 +27,6 @@ def divDown(a: Decimal, b: Decimal)-> Decimal:
     getcontext().prec = 28
     getcontext().rounding = ROUND_DOWN
     result =  a/b
-    print("here", result)
     return result
 
 
