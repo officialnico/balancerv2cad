@@ -23,8 +23,8 @@ class StablePool(StableMath):
         self.factory_fees += factory_fee
         balances = [self._balances[token_in], self._balances[token_out]]
         
-        if(given_in): amount_out = StableMath.calcOutGivenIn(AMPLIFICATION_PARAMETER, balances, 0, 1, swap_amount)
-        else: amount_out = StableMath.calcInGivenOut(AMPLIFICATION_PARAMETER, balances, 0, 1, swap_amount)
+        if(given_in): amount_out = StableMath.calc_out_given_in(AMPLIFICATION_PARAMETER, balances, 0, 1, swap_amount)
+        else: amount_out = StableMath.calc_in_given_out(AMPLIFICATION_PARAMETER, balances, 0, 1, swap_amount)
         
         self._balances[token_out] -= amount_out
         self._balances[token_in] += swap_amount
