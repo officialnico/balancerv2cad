@@ -2,7 +2,7 @@ from decimal import *
 from typing import List, Dict, AnyStr
 from attr import dataclass
 from math import ceil, floor
-from kickstart.util import *
+from BalancerV2cad.util import *
 
 getcontext().prec = 28
 @dataclass

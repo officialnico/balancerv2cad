@@ -21,7 +21,7 @@ pylint = "^2.7.2"
 ipython = "^7.21.0"
 
 [tool.poetry.scripts]
-drive = "kickstart.main:run"
+drive = "BalancerV2cad.main:run"
 tests = "scripts.project_helper:run_tests"
 stubs = "scripts.project_helper:stub_gen"
 analyze = "scripts.project_helper:run_analyzer"

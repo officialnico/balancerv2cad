@@ -18,8 +18,8 @@ import sys
 # third party
 import pytest
 
-# kickstart package
-import kickstart
+# BalancerV2cad package
+import BalancerV2cad
 
 # noinspection PyCallByClass
 
@@ -30,9 +30,9 @@ def version_test() -> None:
     test version
     """
     # Setup code
-    sys.stdout.write('\nRunning setup code for kickstart module\n')
+    sys.stdout.write('\nRunning setup code for BalancerV2cad module\n')
 
-    yield kickstart
+    yield BalancerV2cad
 
     # tear down code
-    sys.stdout.write('Running Teardown code for kickstart module\n')
+    sys.stdout.write('Running Teardown code for BalancerV2cad module\n')

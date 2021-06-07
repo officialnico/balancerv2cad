@@ -1,7 +1,7 @@
 from decimal import *
 from typing import List
-from kickstart.StableMath import StableMath
-from kickstart.BalancerConstants import *
+from BalancerV2cad.StableMath import StableMath
+from BalancerV2cad.BalancerConstants import *
 
 
 class StablePool(StableMath):
