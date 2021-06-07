@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 setuptools.setup(
      name='balancerV2_Model',  
      version='1.0',
-     scripts=['StableMath.py, StablePool.py, WeightedMath.py, WeightedPool.py'] ,
+     scripts=['StableMath, StablePool, WeightedMath, WeightedPool'] ,
      author="Nico Rodriguez, Thomas Liu, Marcin Jaczynski",
      author_email="metavisionlabs@protonmail.com",
      description="Balancer V2 files",
