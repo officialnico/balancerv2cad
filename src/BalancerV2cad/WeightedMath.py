@@ -1,6 +1,6 @@
 from decimal import Decimal
-from model.pools.util import *
-from model.pools.BalancerConstants import *
+from BalancerV2cad.util import *
+from BalancerV2cad.BalancerConstants import *
 from typing import List
 import sys  # todo delete later
 
