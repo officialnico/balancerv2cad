@@ -3,6 +3,10 @@ name = "BalancerV2cad"
 version = "0.1.4"
 description = "A preconfigured Python package, using python poetry"
 authors = ["Nico Rodriguez, Thomas Liu, Marcin Jaczynski"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/metavisionlabs/BalancerV2cad.git"
+repository = "https://github.com/metavisionlabs/BalancerV2cad.git"
 
 [tool.poetry.dependencies]
 python = "^3.8"
