@@ -1,24 +1,14 @@
 [tool.poetry]
 name = "BalancerV2cad"
-version = "0.1.0"
+version = "0.1.4"
 description = "A preconfigured Python package, using python poetry"
 authors = ["Nico Rodriguez, Thomas Liu, Marcin Jaczynski"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-colorlog = "^4.7.2"
-colorama = "^0.4.4"
-python-dotenv = "^0.17.0"
-yapf = "^0.31.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
-mypy = "^0.812"
-jedi = "^0.18.0"
-isort = "^5.7.0"
-yapf = "^0.31.0"
-pylint = "^2.7.2"
-ipython = "^7.21.0"
 
 [tool.poetry.scripts]
 drive = "BalancerV2cad.main:run"
