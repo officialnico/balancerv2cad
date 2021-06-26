@@ -2,6 +2,13 @@
 
 # Balancer V2 Model
 
+```
+from balancerv2cad.WeightedPool import WeightedPool
+wp = WeightedPool()
+wp.join_pool({'WETH':19609,'DAI':30776582},{'WETH':0.6,'DAI':0.4})
+wp.swap('WETH','DAI',2)
+```
+
 The BalancerV2 model is a python implementation of the balancerv2 protocol funded by Balancer and the Token Engineering community. In collaboration with Ocean Protocol and PowerPool. 
 We hope to build a resiliant, easy, and simple to use access to balancer pools for simulations, and build a brighter tomorrow for Token Engineers. Feel free to play and use this model for your own simulations and grow token engineering everywhere.
 
