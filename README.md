@@ -19,4 +19,4 @@ We hope to build a resiliant, easy, and simple to use access to balancer pools f
 - Develop rigorous testing for math functions to assure decimals are flowing exactly as EVM
 - Model ecosystem with agents using these balancer pools as an interactive objects.
 
-All research is open source and transparent. For more information please visit the [Balancer Simulations Documentation](https://metavision.gitbook.io/balancerv2-py-twin/).
+All research is open source and transparent. For more information please visit the [BalancerV2 Simulations Documentation](https://metavision.gitbook.io/balancerv2-py-twin/).
