@@ -2,6 +2,7 @@
 
 # Balancer V2 Model
 
+`pip install balancerv2cad`
 ```
 from balancerv2cad.WeightedPool import WeightedPool
 wp = WeightedPool()
