@@ -18,8 +18,8 @@ import sys
 # third party
 import pytest
 
-# BalancerV2cad package
-import BalancerV2cad
+# balancerv2cad package
+import balancerv2cad
 
 # noinspection PyCallByClass
 
@@ -30,9 +30,9 @@ def version_test() -> None:
     test version
     """
     # Setup code
-    sys.stdout.write('\nRunning setup code for BalancerV2cad module\n')
+    sys.stdout.write('\nRunning setup code for balancerv2cad module\n')
 
-    yield BalancerV2cad
+    yield balancerv2cad
 
     # tear down code
-    sys.stdout.write('Running Teardown code for BalancerV2cad module\n')
+    sys.stdout.write('Running Teardown code for balancerv2cad module\n')

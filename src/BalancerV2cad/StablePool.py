@@ -1,7 +1,7 @@
 from decimal import *
 from typing import List
-from BalancerV2cad.StableMath import StableMath
-from BalancerV2cad.BalancerConstants import *
+from balancerv2cad.StableMath import StableMath
+from balancerv2cad.BalancerConstants import *
 
 
 class StablePool(StableMath):

@@ -1,5 +1,5 @@
 from decimal import *
-from BalancerV2cad.WeightedMath import WeightedMath
+from balancerv2cad.WeightedMath import WeightedMath
 
 
 getcontext().prec = 28

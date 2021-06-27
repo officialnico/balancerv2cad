@@ -5,8 +5,8 @@ pyproject.toml
 import subprocess as sp
 import sys
 
-import BalancerV2cad as ks
-# from BalancerV2cad import PKG_NAME, BASE_DIR
+import balancerv2cad as ks
+# from balancerv2cad import PKG_NAME, BASE_DIR
 
 
 def stub_gen() -> None:

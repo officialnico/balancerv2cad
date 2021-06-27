@@ -1,6 +1,6 @@
 from decimal import Decimal
-from model.pools.weighted.WeightedMath import WeightedMath
-from model.pools.BalancerConstants import *
+from balancerv2cad.WeightedMath import WeightedMath
+from balancerv2cad.BalancerConstants import *
 
 
 class WeightedPool(WeightedMath):

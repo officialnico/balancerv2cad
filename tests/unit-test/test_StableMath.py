@@ -1,5 +1,5 @@
 from typing import List
-from BalancerV2cad.StableMath import StableMath
+from balancerv2cad.StableMath import StableMath
 from decimal import *
 import unittest
 
