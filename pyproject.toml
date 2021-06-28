@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "balancerv2cad"
-version = "0.1.7"
+version = "0.1.9"
 description = "A preconfigured Python package, using python poetry"
 authors = ["Nico Rodriguez, Thomas Liu, Marcin Jaczynski"]
 license = "MIT"
