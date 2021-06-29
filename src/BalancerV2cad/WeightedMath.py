@@ -1,6 +1,6 @@
 from decimal import Decimal
-from BalancerV2cad.util import *
-from BalancerV2cad.BalancerConstants import *
+from balancerv2cad.util import *
+from balancerv2cad.BalancerConstants import *
 from typing import List
 import sys  # todo delete later
 

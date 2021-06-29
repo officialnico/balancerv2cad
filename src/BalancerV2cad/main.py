@@ -7,8 +7,8 @@ Example Driver code
 from dotenv import dotenv_values
 
 # package
-import BalancerV2cad as ks
-from BalancerV2cad.logger import pkg_logger as pl
+import balancerv2cad as ks
+from balancerv2cad.logger import pkg_logger as pl
 
 logger = pl.PackageLogger().get_logger()
 

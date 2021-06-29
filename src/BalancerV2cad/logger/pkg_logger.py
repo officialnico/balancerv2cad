@@ -13,8 +13,8 @@ from typing import Literal
 # 3rd party
 from colorama import Back, Fore, init
 
-# BalancerV2cader package
-from BalancerV2cad import LOGGING_CONFIG, DEFAULT_LOGGER_NAME, BASE_DIR
+# balancerv2cader package
+from balancerv2cad import LOGGING_CONFIG, DEFAULT_LOGGER_NAME, BASE_DIR
 
 init(autoreset=True)
 
