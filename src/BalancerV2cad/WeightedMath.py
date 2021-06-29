@@ -70,13 +70,13 @@ class WeightedMath:
         result = mulUp(balance_in, ratio)
         return result
     @staticmethod
-    def calc_bpt_out_given_exact_tokens_in(balances: List[Decimal], normalized_weights: List[Decimal], amounts_in: List[Decimal],
+    def calc_bpt_out_given_exact_tokens_in(balances: dict, normalized_weights: dict, amounts_in: dict,
                                            bptTotalSupply: Decimal,
                                            swap_fee: Decimal):
 
-        balance_ratios_with_fee = [None] * len(amounts_in)
+        balance_ratios_with_fee = {}
         invariant_ratio_with_fees = 0
-        for i in range(len(balances)):
+        for i in balances:
 
             # balance_ratios_with_fee[i] = balances[i].add(amounts_in[i]).divDown(balances[i]);
             # invariant_ratio_with_fees = invariant_ratio_with_fees.add(balance_ratios_with_fee[i].mulDown(normalized_weights[i]));
@@ -85,7 +85,7 @@ class WeightedMath:
 
 
         invariant_ratio = Decimal(1)
-        for i in range(len(balances)):
+        for i in balances:
             amount_in_without_fee = None
 
             if(balance_ratios_with_fee[i] > invariant_ratio_with_fees):
@@ -134,24 +134,23 @@ class WeightedMath:
         return non_taxable_amount + (divUp(taxable_amount, complement(swap_fee)))
 
     @staticmethod
-   
     def calc_bpt_in_given_exact_tokens_out(
-        balances: List[Decimal],
-        normalized_weights: List[Decimal],
-        amounts_out: List[Decimal],
+        balances: dict,
+        normalized_weights: dict,
+        amounts_out: dict,
         bpt_total_supply: Decimal,
         swap_fee: Decimal
     ) -> Decimal:
 
-        balance_ratios_without_fee = [Decimal(0)] * len(amounts_out)
+        balance_ratios_without_fee = {}
         invariant_ratio_without_fees = Decimal(0)
-        for i in range(len(balances)):
+        for i in balances:
             balance_ratios_without_fee[i] = divUp((balances[i] - amounts_out[i]), balances[i])
             sys.stdout.write(f"{balances[i]}{amounts_out[i]}{balances[i]}{balance_ratios_without_fee} balance ratio")
             invariant_ratio_without_fees = invariant_ratio_without_fees + (mulUp(balance_ratios_without_fee[i], normalized_weights[i]))
 
         invariant_ratio = Decimal(1)
-        for i in range(len(balances)):
+        for i in balances:
             amount_out_with_fee = None
             if(invariant_ratio_without_fees > balance_ratios_without_fee[i]):
                 non_taxable_amount = mulDown(balances[i], (complement(invariant_ratio_without_fees)))

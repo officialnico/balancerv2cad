@@ -36,7 +36,7 @@ class WeightedPool(WeightedMath):
         self._balances[token_in] += swap_amount
         return amount_out
     
-    def join_pool(self, balances: dict, weights={}):
+    def join_pool(self, balances: dict, weights: dict):
         if(not balances.keys()==weights.keys()): raise Exception('KEYS NOT EQUAL')
         for key in weights:
             if(not isinstance(weights[key],Decimal)):
@@ -50,16 +50,22 @@ class WeightedPool(WeightedMath):
                 self._balances[key] += balances[key]
             else:
                 self._balances.update({key:balances[key]})
-        self._weights = weights
+            if(len(self._balances)>8):
+                raise Exception("over 8 tokens")
 
-        if(len(self._balances)>8):
-            raise Exception("over 8 tokens")
+        self._weights = weights
+        bpt = WeightedMath.calc_bpt_out_given_exact_tokens_in(self._balances,self._weights,balances,self._pool_token_supply,self._swap_fee)
+        self._mint_pool_share(bpt)
+        return bpt
     
     def exit_pool(self, balances: dict):
         bals = self._balances - balances
         for key in bals:
             if(bals[key]<0): bals[key] = 0
         self._balances = bals
+        bpt = WeightedMath.calc_bpt_in_given_exact_tokens_out(self._balances,self._weights,balances,self._pool_token_supply,self._swap_fee)
+        self._burn_pool_share(bpt)
+        return bpt
                  
     def set_swap_fee(self, amount: Decimal):
         if(isinstance(amount,int) or isinstance(amount,float)):
