@@ -5,8 +5,8 @@ description = "A preconfigured Python package, using python poetry"
 authors = ["Nico Rodriguez, Thomas Liu, Marcin Jaczynski"]
 license = "MIT"
 readme = "README.md"
-homepage = "https://github.com/metavisionlabs/balancerv2cad.git"
-repository = "https://github.com/metavisionlabs/balancerv2cad.git"
+homepage = "https://github.com/officialnico/balancerv2cad.git"
+repository = "https://github.com/officialnico/balancerv2cad.git"
 
 [tool.poetry.dependencies]
 python = "^3.8"
