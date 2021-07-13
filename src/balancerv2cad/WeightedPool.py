@@ -27,14 +27,15 @@ class WeightedPool(WeightedMath):
         
         if(given_in):
             amount_out = WeightedMath.calc_out_given_in(balances[0], weights[0], balances[1], weights[1], swap_amount)
-            #bpt_out = WeightedMath.calc_bpt_out_given_exact_tokens_in()
+            self._balances[token_out] -= amount_out
+            self._balances[token_in] += swap_amount
+            
         else:
-            amount_out = WeightedMath.calc_in_given_out(balances[0], weights[0], balances[1], weights[1], swap_amount)
-            #bpt_out = WeightedMath.calc_bpt_in_given_exact_tokens_out(self._balances,self._weights,)
+            amount_in = WeightedMath.calc_in_given_out(balances[0], weights[0], balances[1], weights[1], swap_amount)            
+            self._balances[token_out] -= swap_amount
+            self._balances[token_in] += amount_in
 
-        self._balances[token_out] -= amount_out
-        self._balances[token_in] += swap_amount
-        return amount_out
+        return amount_out if given_in else amount_in
     
     def join_pool(self, balances: dict, weights={}):
         if(not balances.keys()==weights.keys()): raise Exception('KEYS NOT EQUAL')
