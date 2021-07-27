@@ -6,6 +6,7 @@
 ```
 from balancerv2cad.WeightedPool import WeightedPool
 wp = WeightedPool()
+# amounts of tokens to join pool, weights of tokens
 wp.join_pool({'WETH':19609,'DAI':30776582},{'WETH':0.6,'DAI':0.4})
 wp.swap('WETH','DAI',2)
 ```
