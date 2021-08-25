@@ -334,14 +334,12 @@ class StableMath:
 
         c = invariant*invariant/ampTimesTotal
         c = divUp(mulUp(c, balances[tokenIndex]), P_D)
-        print(type(bal_sum),type(invariant),type(ampTimesTotal))
         b = bal_sum + divDown(invariant, ampTimesTotal)
         prevTokenbalance = 0
         tokenBalance = divUp((invariant*invariant+c), (invariant+b))
         for i in range(255):
             prevTokenbalance = tokenBalance
             tokenBalance = divUp((mulUp(tokenBalance,tokenBalance) + c),((tokenBalance*Decimal(2))+b-invariant))
-            print(i,tokenBalance)
             if(tokenBalance > prevTokenbalance):
                 if(tokenBalance-prevTokenbalance <= 1/1e18):
                     break

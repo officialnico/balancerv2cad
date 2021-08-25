@@ -8,39 +8,53 @@ from balancerv2cad.BalancerConstants import *
 class StablePool(StableMath):
 
     def __init__(self, initial_pool_supply: Decimal = INIT_POOL_SUPPLY):
-        self._wp = WeightedPool(INIT_POOL_SUPPLY)
+        self._swap_fee = MIN_FEE
+        self._pool_token_supply = initial_pool_supply
+        self.factory_fees = Decimal('0')
+        self._balances = {}
 
     def swap(self, token_in: str, token_out: str, amount: Decimal, given_in: bool = True):
-        return self._wp.swap(token_in, token_out, amount, given_in)
+        if(isinstance(amount,int) or isinstance(amount,float)):
+            amount = Decimal(amount)
+        elif(not isinstance(amount, Decimal)):
+            raise Exception("INCORRECT_TYPE")
+        factory_fee = amount*self._swap_fee
+        swap_amount = amount - factory_fee
+        self.factory_fees += factory_fee
+        balances = [self._balances[token_in], self._balances[token_out]]
+
+        if(given_in): amount_out = StableMath.calcOutGivenIn(AMPLIFICATION_PARAMETER, balances, 0, 1, swap_amount)
+        else: amount_out = StableMath.calcInGivenOut(AMPLIFICATION_PARAMETER, balances, 0, 1, swap_amount)
+
+        self._balances[token_out] -= amount_out
+        self._balances[token_in] += swap_amount
+        return amount_out
 
     def join_pool(self, balances: dict):
-        if(len(balances) != 2 or len(self._wp._balances)==2 and self._wp._balances.keys()!=balances.keys()):
+        if len(balances) != 2:
             raise Exception("50/50 2-token pool only")
-        weights = {}
         for key in balances:
-            weights.update({key:0.5})
-        self._wp.join_pool(balances,weights)
+            if key in self._balances:
+                self._balances[key] += balances[key]
+            else:
+                self._balances.update({key:balances[key]})
 
     def get_amplification_parameter(self):
-        return self._wp.AMPLIFICATION_PARAMETER
+        return self.AMPLIFICATION_PARAMETER
 
     def _get_total_tokens(self):
-        return len(self._wp._balances)
+        return len(self._balancesa)
 
     def exit_pool(self, balances: dict):
-        self._wp.exit_pool(balances)
-
+        bals = self._balances - balances
+        for key in bals:
+            if(bals[key]<0): bals[key] = 0
+        self._balances = bals
     def set_swap_fee(self, amount: Decimal):
-        self._wp.set_swap_fee(amount)
+        self._swap_fee = amount
 
     def _mint_pool_share(self, amount: Decimal):
-        self._wp._pool_token_supply += amount
+        self._pool_token_supply += amount
 
     def _burn_pool_share(self, amount: Decimal):
-        self._wp._pool_token_supply -= amount
-
-    def get_balances(self):
-        return self._wp._balances
-
-    def get_factory_fees(self):
-        return self._wp.factory_fees
+        self._pool_token_supply -= amount
