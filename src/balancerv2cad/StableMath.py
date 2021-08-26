@@ -1,5 +1,5 @@
 from decimal import *
-from typing import List, Dict, AnyStr
+from typing import List
 from attr import dataclass
 from math import ceil, floor
 from balancerv2cad.util import *
@@ -15,7 +15,7 @@ class StableMath:
 
 # -------------------------------------
     @staticmethod
-    def calculateInvariant(amplificationParameter: Decimal, balances: dict) -> Decimal:
+    def calculateInvariant(amplificationParameter: Decimal, balances: list) -> Decimal:
 
         # /**********************************************************************************************
         # // invariant                                                                                 //
@@ -106,7 +106,7 @@ class StableMath:
     @staticmethod
 
 
-    def calcBptOutGivenExactTokensIn(amplificationParameter: Decimal, balances: dict, amountsIn: dict, bptTotalSupply: Decimal, swapFee: Decimal, swapFeePercentage: Decimal) -> Decimal:
+    def calcBptOutGivenExactTokensIn(amplificationParameter: Decimal, balances: list, amountsIn: list, bptTotalSupply: Decimal, swapFee: Decimal, swapFeePercentage: Decimal) -> Decimal:
         # get current invariant
         currentInvariant = StableMath.calculateInvariant(amplificationParameter, balances)
 
@@ -143,7 +143,7 @@ class StableMath:
     @staticmethod
 
 
-    def calcDueTokenProtocolSwapFeeAmount(amplificationParameter: Decimal, balances: dict, lastInvariant: Decimal, tokenIndex: int, protocolSwapFeePercentage: float):
+    def calcDueTokenProtocolSwapFeeAmount(amplificationParameter: Decimal, balances: list, lastInvariant: Decimal, tokenIndex: int, protocolSwapFeePercentage: float):
         # /**************************************************************************************************************
         # // oneTokenSwapFee - polynomial equation to solve                                                            //
         # // af = fee amount to calculate in one token                                                                 //
@@ -171,7 +171,7 @@ class StableMath:
     @staticmethod
 
 
-    def calcInGivenOut(amplificationParameter: Decimal, balances: dict, tokenIndexIn: str, tokenIndexOut: str, tokenAmountOut: Decimal):
+    def calcInGivenOut(amplificationParameter: Decimal, balances: list, tokenIndexIn: int, tokenIndexOut: int, tokenAmountOut: Decimal):
 
         # /**************************************************************************************************************
         # // inGivenOut token x for y - polynomial equation to solve                                                   //
@@ -202,7 +202,7 @@ class StableMath:
     @staticmethod
 
 
-    def calcOutGivenIn(amplificationParameter: Decimal, balances: dict, tokenIndexIn: str, tokenIndexOut: str, tokenAmountIn: Decimal):
+    def calcOutGivenIn(amplificationParameter: Decimal, balances: list, tokenIndexIn: int, tokenIndexOut: int, tokenAmountIn: Decimal):
 
         # /**************************************************************************************************************
         # // outGivenIn token x for y - polynomial equation to solve                                                   //
@@ -238,7 +238,7 @@ class StableMath:
     @staticmethod
 
 
-    def calcTokenInGivenExactBptOut(amplificationParameter: Decimal, balances: dict, tokenIndex: int, bptAmountOut: Decimal, bptTotalSupply: Decimal, swapFeePercentage: Decimal):
+    def calcTokenInGivenExactBptOut(amplificationParameter: Decimal, balances: list, tokenIndex: int, bptAmountOut: Decimal, bptTotalSupply: Decimal, swapFeePercentage: Decimal):
         # Token in so we round up overall
 
         #Get the current invariant
@@ -267,7 +267,7 @@ class StableMath:
     @staticmethod
 
 
-    def calcTokensOutGivenExactBptIn(balances: dict, bptAmountIn: Decimal, bptTotalSupply: Decimal) -> dict:
+    def calcTokensOutGivenExactBptIn(balances: list, bptAmountIn: Decimal, bptTotalSupply: Decimal) -> list:
 
         # /**********************************************************************************************
         # // exactBPTInForTokensOut                                                                    //
@@ -293,7 +293,7 @@ class StableMath:
     @staticmethod
 
 
-    def calcTokenOutGivenExactBptIn(amplificationParameter, balances: dict, tokenIndex: int, bptAmountIn: Decimal, bptTotalSupply: Decimal, swapFeePercentage: Decimal):
+    def calcTokenOutGivenExactBptIn(amplificationParameter, balances: list, tokenIndex: int, bptAmountIn: Decimal, bptTotalSupply: Decimal, swapFeePercentage: Decimal):
         # Get current invariant
         currentInvariant = StableMath.calculateInvariant(amplificationParameter, balances)
         # calculate the new invariant

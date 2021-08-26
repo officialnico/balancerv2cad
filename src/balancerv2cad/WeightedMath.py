@@ -69,6 +69,7 @@ class WeightedMath:
         ratio = power - Decimal(1)
         result = mulUp(balance_in, ratio)
         return result
+        
     @staticmethod
     def calc_bpt_out_given_exact_tokens_in(balances: List[Decimal], normalized_weights: List[Decimal], amounts_in: List[Decimal],
                                            bptTotalSupply: Decimal,
@@ -77,9 +78,6 @@ class WeightedMath:
         balance_ratios_with_fee = [None] * len(amounts_in)
         invariant_ratio_with_fees = 0
         for i in range(len(balances)):
-
-            # balance_ratios_with_fee[i] = balances[i].add(amounts_in[i]).divDown(balances[i]);
-            # invariant_ratio_with_fees = invariant_ratio_with_fees.add(balance_ratios_with_fee[i].mulDown(normalized_weights[i]));
             balance_ratios_with_fee[i] = divDown((balances[i] + amounts_in[i]), balances[i])
             invariant_ratio_with_fees = mulDown((invariant_ratio_with_fees + balance_ratios_with_fee[i]), normalized_weights[i]) #.add(balance_ratios_with_fee[i].mulDown(normalized_weights[i]));
 
