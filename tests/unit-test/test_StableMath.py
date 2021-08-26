@@ -14,16 +14,6 @@ def expectEqualWithError(result: Decimal, expected: Decimal):
 
 class TestStableMath(unittest.TestCase):
 
-    
-
-    # def test_calc_bpt_in_given_exact_tokens_out(stablemath_test):
-
-    #     assert StableMath.calc_bpt_in_given_exact_tokens_out(
-    #         Decimal(2),
-    #         [Decimal(222),Decimal(3112),Decimal(311)],
-    #         [Decimal(11),Decimal(22),Decimal(310)],
-    #         Decimal(2),Decimal(4)
-    #         ) == 2
 
     def test_calculateInvariants(self):
         '''

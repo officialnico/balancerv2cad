@@ -43,13 +43,14 @@ class StablePool(StableMath):
         return self.AMPLIFICATION_PARAMETER
 
     def _get_total_tokens(self):
-        return len(self._balancesa)
+        return len(self._balances)
 
     def exit_pool(self, balances: dict):
         bals = self._balances - balances
         for key in bals:
             if(bals[key]<0): bals[key] = 0
         self._balances = bals
+        
     def set_swap_fee(self, amount: Decimal):
         self._swap_fee = amount
 
