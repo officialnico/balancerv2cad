@@ -1,6 +1,6 @@
 # <img src="https://github.com/balancer-labs/balancer-core-v2/blob/master/logo.svg" alt="Balancer" height="128px">
 
-**This repo has been archived, latest version can be found [here](https://github.com/balancer-labs/balpy/tree/main/balpy) **
+**This repo has been archived, latest version can be found [here](https://github.com/balancer-labs/balpy/tree/main/balpy) 
 
 ## Overview
 
