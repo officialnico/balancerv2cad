@@ -1,5 +1,7 @@
 # <img src="https://github.com/balancer-labs/balancer-core-v2/blob/master/logo.svg" alt="Balancer" height="128px">
 
+## This repo has been archived, latest version can be found [here](https://github.com/balancer-labs/balpy/tree/main/balpy) 
+
 ## Overview
 
 The BalancerV2 model is a python implementation of the balancerv2 protocol funded by Balancer and the Token Engineering community. In collaboration with Ocean Protocol and PowerPool. 
